@@ -1,8 +1,11 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
+import { middleware as body } from 'bodymen'
 import { create, index, show, update, destroy } from './controller'
+import { schema } from './model'
 export Message, { schema } from './model'
 
+const { content } = schema.tree
 const router = new Router()
 
 /**
@@ -14,7 +17,17 @@ const router = new Router()
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
  */
-router.post('/', create)
+router.post(
+	'/',
+	body({
+		content: {
+			type: String,
+			required: true,
+			minlength: 2
+		}
+	}),
+	create
+)
 
 /**
  * @api {get} /messages Retrieve messages
@@ -47,7 +60,7 @@ router.get('/:id', show)
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
  */
-router.put('/:id', update)
+router.put('/:id', body({ content }), update)
 
 /**
  * @api {delete} /messages/:id Delete message

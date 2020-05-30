@@ -1,10 +1,10 @@
 import { merge } from 'lodash'
-import { success, notFound } from '../../services/response/'
+import { success, notFound } from 's/response'
 import { Message } from '.'
 
-export const create = async ({ user, body }, res, next) => {
+export const create = async ({ bodymen: { body } }, res, next) => {
 	try {
-		const message = await Message.create({ ...body, user })
+		const message = await Message.create(body)
 		await success(res, 201)(message.view())
 	} catch (error) {
 		next()
@@ -34,9 +34,9 @@ export const show = async ({ params: { id } }, res, next) => {
 	}
 }
 
-export const update = async ({ user, body, params: { id } }, res, next) => {
+export const update = async ({ bodymen: { body }, params }, res, next) => {
 	try {
-		const message = await Message.findById(id)
+		const message = await Message.findById(params.id)
 		await notFound(res)(message)
 		message => (message ? merge(message, body).save() : null)
 		await success(res)(message ? message.view(true) : null)
