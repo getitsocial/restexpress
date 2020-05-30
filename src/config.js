@@ -34,7 +34,9 @@ const config = {
 		mongo: {
 			uri: 'mongodb://localhost/testgenerator-dev',
 			options: {
-				debug: true
+				debug: true,
+				useCreateIndex: true,
+				useNewUrlParser: true
 			}
 		}
 	},

@@ -1,4 +1,6 @@
 import { Router } from 'express'
+import auth from './auth'
+import user from './user'
 import message from './message'
 
 const router = new Router()
@@ -26,6 +28,8 @@ const router = new Router()
  * @apiParam {String[]} [sort=-createdAt] Order of returned items.
  * @apiParam {String[]} [fields] Fields to be returned.
  */
+router.use('/auth', auth)
+router.use('/users', user)
 router.use('/messages', message)
 
 export default router

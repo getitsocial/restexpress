@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
+import { token } from 's/passport'
 import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 export Message, { schema } from './model'
@@ -12,13 +13,16 @@ const router = new Router()
  * @api {post} /messages Create message
  * @apiName CreateMessage
  * @apiGroup Message
+ * @apiPermission user
  * @apiParam {String} access_token user access token.
  * @apiSuccess {Object} message Message's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
+ * @apiError 401 user access only.
  */
 router.post(
 	'/',
+	token({ required: true }),
 	body({
 		content: {
 			type: String,

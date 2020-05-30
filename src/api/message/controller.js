@@ -7,7 +7,7 @@ export const create = async ({ bodymen: { body } }, res, next) => {
 		const message = await Message.create(body)
 		await success(res, 201)(message.view())
 	} catch (error) {
-		next()
+		next(error)
 	}
 }
 
@@ -20,7 +20,7 @@ export const index = async (
 		const messages = await Message.find(query, select, cursor)
 		await success(res)(messages.map(message => message.view()))
 	} catch (error) {
-		next()
+		next(error)
 	}
 }
 
@@ -30,7 +30,7 @@ export const show = async ({ params: { id } }, res, next) => {
 		await notFound(res)(message)
 		await success(res)(message ? message.view() : null)
 	} catch (error) {
-		next()
+		next(error)
 	}
 }
 
@@ -41,7 +41,7 @@ export const update = async ({ bodymen: { body }, params }, res, next) => {
 		message => (message ? merge(message, body).save() : null)
 		await success(res)(message ? message.view(true) : null)
 	} catch (error) {
-		next()
+		next(error)
 	}
 }
 
@@ -52,6 +52,6 @@ export const destroy = async ({ params: { id } }, res, next) => {
 		message ? await message.remove() : null
 		await success(res, 204)(message)
 	} catch (error) {
-		next()
+		next(error)
 	}
 }
