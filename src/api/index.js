@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { env, mongo, port, ip, apiRoot } from '~/config'
 import auth from './auth'
 import user from './user'
 import message from './message'

@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { token } from 's/passport'
-import { create, index, show, update, destroy } from './controller'
+import { doorman } from 's/auth'
+import { create, getAll, getOne, update, destroy } from './controller'
 import { schema } from './model'
 export Message, { schema } from './model'
 
@@ -13,16 +13,15 @@ const router = new Router()
  * @api {post} /messages Create message
  * @apiName CreateMessage
  * @apiGroup Message
- * @apiPermission user
  * @apiParam {String} access_token user access token.
  * @apiSuccess {Object} message Message's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
+ * @apiPermission user
  * @apiError 401 user access only.
  */
 router.post(
 	'/',
-	token({ required: true }),
 	body({
 		content: {
 			type: String,
@@ -30,6 +29,7 @@ router.post(
 			minlength: 2
 		}
 	}),
+	doorman(['user', 'admin']),
 	create
 )
 
@@ -42,7 +42,7 @@ router.post(
  * @apiSuccess {Object[]} messages List of messages.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get('/', query(), index)
+router.get('/', query(), getAll)
 
 /**
  * @api {get} /messages/:id Retrieve message
@@ -53,7 +53,7 @@ router.get('/', query(), index)
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
  */
-router.get('/:id', show)
+router.get('/:id', getOne)
 
 /**
  * @api {put} /messages/:id Update message

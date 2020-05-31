@@ -20,7 +20,8 @@ export const index = async ({ querymen: { query, select, cursor } }, res, next) 
 	}
 }
 
-export const show = async ({ params: { id } }, res, next) => {
+// Get One
+export const getOne = async ({ params: { id } }, res, next) => {
 	try {
 		const message = await Message.findById(id)
 		await notFound(res)(message)
@@ -30,6 +31,7 @@ export const show = async ({ params: { id } }, res, next) => {
 	}
 }
 
+// Put
 export const update = async ({ bodymen: { body }, params }, res, next) => {
 	try {
 		const message = await Message.findById(params.id)
@@ -41,6 +43,7 @@ export const update = async ({ bodymen: { body }, params }, res, next) => {
 	}
 }
 
+// Delete
 export const destroy = async ({ params: { id } }, res, next) => {
 	try {
 		const message = await Message.findById(id)

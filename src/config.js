@@ -1,9 +1,6 @@
 /* eslint-disable no-unused-vars */
-import path from 'path'
-import merge from 'lodash/merge'
-import dotenv from 'dotenv'
-
-dotenv.config()
+import 'dotenv/config'
+import { extractToken } from 's/auth/utils'
 
 /* istanbul ignore next */
 const requireProcessEnv = name => {
@@ -16,17 +13,27 @@ const requireProcessEnv = name => {
 const config = {
 	all: {
 		env: process.env.NODE_ENV || 'development',
-		root: path.join(__dirname, '..'),
 		port: process.env.PORT || 9000,
 		ip: process.env.IP || '0.0.0.0',
 		apiRoot: process.env.API_ROOT || '/api',
 		masterKey: requireProcessEnv('MASTER_KEY'),
-		jwtSecret: requireProcessEnv('JWT_SECRET'),
+		jwt: {
+			secret: requireProcessEnv('JWT_SECRET'),
+			credentialsRequired: false,
+			getToken: req => extractToken(req)
+		},
 		mongo: {
 			options: {
 				useNewUrlParser: true,
 				useUnifiedTopology: true
 			}
+		},
+		redis: {
+			url: requireProcessEnv('REDIS_URL')
+		},
+		rateLimiter: {
+			windowMs: 15 * 60 * 1000, // 15 minutes
+			max: 100 // limit each IP to 100 requests per windowMs
 		}
 	},
 	test: {},
@@ -36,7 +43,8 @@ const config = {
 			options: {
 				debug: true,
 				useCreateIndex: true,
-				useNewUrlParser: true
+				useNewUrlParser: true,
+				useUnifiedTopology: true
 			}
 		}
 	},
@@ -49,5 +57,5 @@ const config = {
 	}
 }
 
-module.exports = merge(config.all, config[config.all.env])
+module.exports = Object.assign(config.all, config[config.all.env])
 export default module.exports

@@ -1,19 +1,27 @@
 import express from 'express'
 import cors from 'cors'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
 import compression from 'compression'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
-import { env } from '~/config'
+import { env, rateLimiter } from '~/config'
 
-// import { env } from '../../config';
+// Enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+// see https://expressjs.com/en/guide/behind-proxies.html
+// app.set('trust proxy', 1);
+// istanbul ignore next
+const limiter = rateLimit(rateLimiter)
 
 export default (apiRoot, routes) => {
 	const app = express()
 
 	/* istanbul ignore next */
 	if (env === 'production' || env === 'development') {
+		app.use(helmet())
+		app.use(limiter)
 		app.use(cors())
 		app.use(compression())
 		app.use(morgan('dev'))
