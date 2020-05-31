@@ -1,7 +1,9 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { password as passwordAuth, master, token } from 's/passport'
+import { doorman, masterman } from 's/auth'
+import { schema } from './model'
+export User, { schema } from './model'
 import {
 	index,
 	showMe,
@@ -11,8 +13,6 @@ import {
 	updatePassword,
 	destroy
 } from './controller'
-import { schema } from './model'
-export User, { schema } from './model'
 
 const router = new Router()
 const { email, password, name, picture, role } = schema.tree
@@ -26,9 +26,10 @@ const { email, password, name, picture, role } = schema.tree
  * @apiUse listParams
  * @apiSuccess {Object[]} users List of users.
  * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 401 Admin access only.
+ * @apiPermission user
+ * @apiError 401 user access only.
  */
-router.get('/', token({ required: true, roles: ['admin'] }), query(), index)
+router.get('/', doorman(['admin']), query(), index)
 
 /**
  * @api {get} /users/me Retrieve current user
@@ -38,7 +39,7 @@ router.get('/', token({ required: true, roles: ['admin'] }), query(), index)
  * @apiParam {String} access_token User access_token.
  * @apiSuccess {Object} user User's data.
  */
-router.get('/me', token({ required: true }), showMe)
+router.get('/me', doorman(['user']), showMe)
 
 /**
  * @api {get} /users/:id Retrieve user
@@ -48,7 +49,7 @@ router.get('/me', token({ required: true }), showMe)
  * @apiSuccess {Object} user User's data.
  * @apiError 404 User not found.
  */
-router.get('/:id', show)
+router.get('/:id', doorman(['user', 'admin']), show)
 
 /**
  * @api {post} /users Create user
@@ -68,7 +69,7 @@ router.get('/:id', show)
  */
 router.post(
 	'/',
-	master(),
+	masterman(),
 	body({ email, password, name, picture, role }),
 	create
 )
@@ -86,7 +87,7 @@ router.post(
  * @apiError 401 Current user or admin access only.
  * @apiError 404 User not found.
  */
-router.put('/:id', token({ required: true }), body({ name, picture }), update)
+router.put('/:id', doorman(['user', 'admin']), body({ name, picture }), update)
 
 /**
  * @api {put} /users/:id/password Update password
@@ -99,7 +100,12 @@ router.put('/:id', token({ required: true }), body({ name, picture }), update)
  * @apiError 401 Current user access only.
  * @apiError 404 User not found.
  */
-router.put('/:id/password', passwordAuth(), body({ password }), updatePassword)
+router.put(
+	'/:id/password',
+	doorman(['user', 'admin']),
+	body({ password }),
+	updatePassword
+)
 
 /**
  * @api {delete} /users/:id Delete user
@@ -111,6 +117,6 @@ router.put('/:id/password', passwordAuth(), body({ password }), updatePassword)
  * @apiError 401 Admin access only.
  * @apiError 404 User not found.
  */
-router.delete('/:id', token({ required: true, roles: ['admin'] }), destroy)
+router.delete('/:id', doorman(['user', 'admin']), destroy)
 
 export default router

@@ -1,6 +1,7 @@
 import { Router } from 'express'
-import { login } from './controller'
-import { password, master, facebook, github, google } from 's/passport'
+import { middleware as body } from 'bodymen'
+import { authenticate, providerAuthenticate, logout } from './controller'
+import { masterman, doorman } from '~/services/auth'
 
 const router = new Router()
 
@@ -15,28 +16,39 @@ const router = new Router()
  * @apiSuccess (Success 201) {Object} user Current user's data.
  * @apiError 401 Master access only or invalid credentials.
  */
-router.post('/', master(), password(), login)
+router.post(
+	'',
+	body({
+		email: {
+			type: String,
+			required: true
+		},
+		password: {
+			type: String,
+			required: true
+		}
+	}),
+	masterman(),
+	authenticate
+)
 
 /**
- * @api {post} /auth/facebook Authenticate with Facebook
- * @apiName AuthenticateFacebook
+ * @api {post} /auth/logout logout current user
+ * @apiName LogoutUser
  * @apiGroup Auth
- * @apiParam {String} access_token Facebook user accessToken.
+ * @apiError 401 Invalid credentials.
+ */
+router.post('/logout', doorman(['user', 'admin']), logout)
+
+/**
+ * @api {post} /auth/:provider Authenticate with Facebook or Google
+ * @apiName AuthenticateProvider
+ * @apiGroup Auth
+ * @apiParam {String} access_token Facebook or Google user accessToken.
  * @apiSuccess (Success 201) {String} token User `access_token` to be passed to other requests.
  * @apiSuccess (Success 201) {Object} user Current user's data.
  * @apiError 401 Invalid credentials.
  */
-router.post('/facebook', facebook(), login)
-
-/**
- * @api {post} /auth/google Authenticate with Google
- * @apiName AuthenticateGoogle
- * @apiGroup Auth
- * @apiParam {String} access_token Google user accessToken.
- * @apiSuccess (Success 201) {String} token User `access_token` to be passed to other requests.
- * @apiSuccess (Success 201) {Object} user Current user's data.
- * @apiError 401 Invalid credentials.
- */
-router.post('/google', google(), login)
+router.post('/:provider', providerAuthenticate)
 
 export default router

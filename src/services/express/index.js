@@ -7,8 +7,6 @@ import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { env } from '~/config'
 
-// import { env } from '../../config';
-
 export default (apiRoot, routes) => {
 	const app = express()
 

@@ -40,6 +40,10 @@ const userSchema = new Schema(
 		picture: {
 			type: String,
 			trim: true
+		},
+		verified: {
+			type: Boolean,
+			default: true
 		}
 	},
 	{
@@ -114,13 +118,15 @@ userSchema.statics = {
 				user.picture = picture
 				return user.save()
 			} else {
+				console.log(email)
+				console.log(picture)
 				const password = randtoken.generate(16)
 				return this.create({
 					services: { [service]: id },
+					picture,
 					email,
 					password,
-					name,
-					picture
+					name
 				})
 			}
 		})
