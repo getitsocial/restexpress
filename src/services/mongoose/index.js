@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { mongo } from '~/config'
+export paginatePlugin from './plugins/paginate'
 
 Object.keys(mongo.options).forEach(key => {
 	mongoose.set(key, mongo.options[key])

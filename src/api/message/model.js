@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import { paginatePlugin } from 's/mongoose'
 
 const messageSchema = new Schema(
 	{
@@ -28,16 +29,13 @@ messageSchema.methods = {
 			updatedAt: this.updatedAt
 		}
 
-		return full
-			? {
-				...view
-				// add properties for a full view
-			  }
-			: view
+		return full ? {...view } : view
 	}
 }
 
+messageSchema.plugin(paginatePlugin)
 const model = mongoose.model('Message', messageSchema)
 
 export const schema = model.schema
 export default model
+ 

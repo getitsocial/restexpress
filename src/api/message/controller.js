@@ -11,14 +11,10 @@ export const create = async ({ bodymen: { body } }, res, next) => {
 	}
 }
 
-export const index = async (
-	{ querymen: { query, select, cursor } },
-	res,
-	next
-) => {
+export const index = async ({ querymen: { query, select, cursor } }, res, next) => {
 	try {
-		const messages = await Message.find(query, select, cursor)
-		await success(res)(messages.map(message => message.view()))
+		const result = await Message.paginate(query, select, cursor, true)
+		res.status(200).json(result)
 	} catch (error) {
 		next(error)
 	}
