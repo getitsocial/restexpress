@@ -17,18 +17,25 @@ export const index = async (
 export const show = async ({ params }, res, next) => {
 	try {
 		const user = await User.findById(params.id)
-		await success(res)(user => (user ? user.view() : null))
+		await success(res)(user ? user.view() : null)
 	} catch (error) {
 		next(error)
 	}
 }
 
-export const showMe = ({ user }, res) => res.json(user.view(true))
+export const showMe = async ({ user: { _id } }, res) => {
+	try {
+		const user = await User.findById(_id)
+		await success(res)(user ? user.view(true) : null)
+	} catch (error) {
+		next(error)
+	}
+}
 
 export const create = async ({ bodymen: { body } }, res, next) => {
 	try {
 		const user = await User.create(body)
-		success(res, 201)(user)
+		success(res, 201)(user.view(true))
 	} catch (error) {
 		/* istanbul ignore else */
 		if (error.name === 'MongoError' && error.code === 11000) {

@@ -1,8 +1,8 @@
-import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
 import randtoken from 'rand-token'
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
+import { gravatar, projection } from 's/mongoose'
 import { env } from '~/config'
 
 const roles = ['user', 'admin']
@@ -51,22 +51,6 @@ const userSchema = new Schema(
 	}
 )
 
-userSchema.path('email').set(function(email) {
-	if (!this.picture || this.picture.indexOf('https://gravatar.com') === 0) {
-		const hash = crypto
-			.createHash('md5')
-			.update(email)
-			.digest('hex')
-		this.picture = `https://gravatar.com/avatar/${hash}?d=identicon`
-	}
-
-	if (!this.name) {
-		this.name = email.replace(/^(.+)@.+$/, '$1')
-	}
-
-	return email
-})
-
 userSchema.pre('save', function(next) {
 	if (!this.isModified('password')) return next()
 
@@ -82,29 +66,6 @@ userSchema.pre('save', function(next) {
 		.catch(next)
 })
 
-userSchema.methods = {
-	view(full) {
-		let view = {}
-		let fields = ['id', 'name', 'picture']
-
-		if (full) {
-			fields = [...fields, 'email', 'createdAt']
-		}
-
-		fields.forEach(field => {
-			view[field] = this[field]
-		})
-
-		return view
-	},
-
-	authenticate(password) {
-		return bcrypt
-			.compare(password, this.password)
-			.then(valid => (valid ? this : false))
-	}
-}
-
 userSchema.statics = {
 	roles,
 
@@ -118,8 +79,6 @@ userSchema.statics = {
 				user.picture = picture
 				return user.save()
 			} else {
-				console.log(email)
-				console.log(picture)
 				const password = randtoken.generate(16)
 				return this.create({
 					services: { [service]: id },
@@ -133,6 +92,8 @@ userSchema.statics = {
 	}
 }
 
+userSchema.plugin(gravatar)
+userSchema.plugin(projection, ['id', 'name', 'picture'])
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 
 const model = mongoose.model('User', userSchema)

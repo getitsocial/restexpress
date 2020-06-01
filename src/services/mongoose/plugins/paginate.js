@@ -1,17 +1,23 @@
 // eslint-disable-next-line no-unused-vars
 export default function paginate(schema, options) {
-	schema.statics.paginate = async function(query, select, cursor, view) {
+	schema.statics.paginate = async function(
+		query,
+		select,
+		cursor,
+		{ addView, populate }
+	) {
 		const [count, rows] = await Promise.all([
 			this.countDocuments(query),
-			this.find(query, select, cursor)
+			this.find(query, select, cursor).populate(populate)
 		])
 
-		const page = Math.floor(cursor.skip / cursor.limit)
+		// Start at page 1
+		const page = Math.floor(cursor.skip / cursor.limit) + 1
 		const nextPage = page * cursor.limit === count ? null : page + 1
-		const prevPage = page === 0 ? null : page - 1
+		const prevPage = page === 1 ? null : page - 1
 
 		return {
-			rows: view ? rows.map(row => row.view()) : rows,
+			rows: addView ? rows.map(row => row.view()) : rows,
 			count,
 			nextPage,
 			prevPage,

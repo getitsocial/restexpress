@@ -1,10 +1,15 @@
 import mongoose, { Schema } from 'mongoose'
-import { paginate } from 's/mongoose'
+import { paginate, projection } from 's/mongoose'
 
 const messageSchema = new Schema(
 	{
 		content: {
 			type: String,
+			required: true
+		},
+		author: {
+			type: 'ObjectId',
+			ref: 'User',
 			required: true
 		}
 	},
@@ -19,20 +24,13 @@ const messageSchema = new Schema(
 	}
 )
 
-messageSchema.methods = {
-	view(full) {
-		const view = {
-			// simple view
-			id: this.id,
-			content: this.content,
-			createdAt: this.createdAt,
-			updatedAt: this.updatedAt
-		}
-
-		return full ? { ...view } : view
-	}
-}
-
+messageSchema.plugin(projection, [
+	'id',
+	'content',
+	'createdAt',
+	'updatedAt',
+	'author'
+])
 messageSchema.plugin(paginate)
 const model = mongoose.model('Message', messageSchema)
 

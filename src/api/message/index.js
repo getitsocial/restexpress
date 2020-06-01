@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { doorman } from 's/auth'
+import { addAuthor } from 's/request'
 import { create, getAll, getOne, update, destroy } from './controller'
 import { schema } from './model'
 export Message, { schema } from './model'
@@ -30,6 +31,7 @@ router.post(
 		}
 	}),
 	doorman(['user', 'admin']),
+	addAuthor,
 	create
 )
 
