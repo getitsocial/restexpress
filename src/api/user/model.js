@@ -94,8 +94,9 @@ userSchema.statics = {
 
 userSchema.plugin(gravatar)
 userSchema.plugin(projection, {
-	defaultFields: ['id', 'name', 'picture'],
-	fullFields: ['createdAt']
+	guest: ['id', 'name', 'picture'],
+	user: ['id', 'name', 'picture', 'createdAt'],
+	admin: ['id', 'name', 'picture', 'createdAt', 'role']
 })
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 

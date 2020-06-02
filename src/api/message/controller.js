@@ -10,8 +10,7 @@ export const getAll = async (
 ) => {
 	try {
 		const messages = await Message.paginate(query, select, cursor, {
-			addView: true,
-			fullView: user?.role === 'admin',
+			view: user?.role || 'guest',
 			populate: 'author'
 		})
 		await success(res)(messages)
