@@ -4,13 +4,14 @@ import { Message } from '.'
 
 // Get all
 export const getAll = async (
-	{ querymen: { query, select, cursor } },
+	{ querymen: { query, select, cursor }, user },
 	res,
 	next
 ) => {
 	try {
 		const messages = await Message.paginate(query, select, cursor, {
 			addView: true,
+			fullView: user?.role === 'admin',
 			populate: 'author'
 		})
 		await success(res)(messages)

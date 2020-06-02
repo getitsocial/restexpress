@@ -44,7 +44,7 @@ router.post(
  * @apiSuccess {Object[]} messages List of messages.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get('/', query(), getAll)
+router.get('/', doorman(['guest', 'user']), query(), getAll)
 
 /**
  * @api {get} /messages/:id Retrieve message
@@ -55,7 +55,7 @@ router.get('/', query(), getAll)
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
  */
-router.get('/:id', getOne)
+router.get('/:id', doorman(['user']), getOne)
 
 /**
  * @api {put} /messages/:id Update message

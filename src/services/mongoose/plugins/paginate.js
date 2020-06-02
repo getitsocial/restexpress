@@ -4,8 +4,9 @@ export default function paginate(schema, options) {
 		query,
 		select,
 		cursor,
-		{ addView, populate }
+		{ addView, fullView, populate }
 	) {
+		console.log(fullView)
 		const [count, rows] = await Promise.all([
 			this.countDocuments(query),
 			this.find(query, select, cursor).populate(populate)
@@ -17,7 +18,7 @@ export default function paginate(schema, options) {
 		const prevPage = page === 1 ? null : page - 1
 
 		return {
-			rows: addView ? rows.map(row => row.view()) : rows,
+			rows: addView ? rows.map(row => row.view(fullView)) : rows,
 			count,
 			nextPage,
 			prevPage,
