@@ -31,7 +31,7 @@ router.post(
 		}
 	}),
 	doorman(['user', 'admin']),
-	addAuthor,
+	addAuthor({ required: true, addBody: true }),
 	create
 )
 
