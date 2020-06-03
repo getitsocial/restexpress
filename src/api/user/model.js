@@ -5,7 +5,7 @@ import mongooseKeywords from 'mongoose-keywords'
 import { gravatar, projection } from 's/mongoose'
 import { env } from '~/config'
 
-const roles = ['user', 'admin']
+const roles = ['guest', 'user', 'admin']
 
 const userSchema = new Schema(
 	{
@@ -93,7 +93,11 @@ userSchema.statics = {
 }
 
 userSchema.plugin(gravatar)
-userSchema.plugin(projection, ['id', 'name', 'picture'])
+userSchema.plugin(projection, {
+	guest: ['id', 'name', 'picture'],
+	user: ['id', 'name', 'picture', 'createdAt'],
+	admin: ['id', 'name', 'picture', 'createdAt', 'role']
+})
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 
 const model = mongoose.model('User', userSchema)

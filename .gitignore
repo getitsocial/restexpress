@@ -74,3 +74,6 @@ docs/
 
 # package management specific
 package-lock.json
+
+# Licence
+licence.csv

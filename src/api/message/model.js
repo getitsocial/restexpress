@@ -24,13 +24,11 @@ const messageSchema = new Schema(
 	}
 )
 
-messageSchema.plugin(projection, [
-	'id',
-	'content',
-	'createdAt',
-	'updatedAt',
-	'author'
-])
+messageSchema.plugin(projection, {
+	guest: ['id', 'content'],
+	user: ['id', 'content', 'author'],
+	admin: ['id', 'content', 'author', 'createdAt']
+})
 messageSchema.plugin(paginate)
 const model = mongoose.model('Message', messageSchema)
 

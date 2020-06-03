@@ -1,4 +1,4 @@
-import { decode } from 'jsonwebtoken'
+import { sign as signJWT, decode } from 'jsonwebtoken'
 import { createClient } from 'redis'
 import { default as JWTR } from 'jwt-redis'
 import eJWT from 'express-jwt'
@@ -23,10 +23,12 @@ const isRevokedCallback = async (req, res, done) => {
 }
 
 // Define user roles
-export const roles = ['user', 'admin']
+export const roles = ['guest', 'user', 'admin']
 
 export const sign = async ({ _id, role }) =>
 	jwtr.sign({ _id, role }, secret, { expiresIn: '8d' })
+
+// export const signGuest = async () => signJWT({}, secret, { expiresIn: '8d' })
 
 export const decodeJWT = async token => decode(token)
 
@@ -39,6 +41,12 @@ export const destroy = async req => {
 	await destroyJTI(jti)
 }
 
+// Check if passed values include guest role
+const isGuestRole = (passedRoles, res, next) => {
+	if (!passedRoles.includes('guest')) res.status(401).end()
+	next()
+}
+
 // Main middleware validator
 export const doorman = passedRoles => [
 	eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } }),
@@ -46,7 +54,7 @@ export const doorman = passedRoles => [
 		roles.some(r => passedRoles.includes(r)) &&
 		passedRoles.includes(req.user?.role)
 			? next()
-			: res.status(401).end()
+			: isGuestRole(passedRoles, res, next)
 ]
 
 export const masterman = () => (req, res, next) => {
