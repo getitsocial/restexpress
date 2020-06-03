@@ -1,8 +1,8 @@
-import bcrypt from 'bcryptjs'
-import randtoken from 'rand-token'
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
-import { gravatar, projection } from 's/mongoose'
+import { generate } from 'rand-token'
+import { gravatar } from 's/mongoose'
+import { hashPassword } from 's/auth'
 import { env } from '~/config'
 
 const roles = ['guest', 'user', 'admin']
@@ -53,17 +53,8 @@ const userSchema = new Schema(
 
 userSchema.pre('save', function(next) {
 	if (!this.isModified('password')) return next()
-
 	/* istanbul ignore next */
-	const rounds = env === 'test' ? 1 : 9
-
-	bcrypt
-		.hash(this.password, rounds)
-		.then(hash => {
-			this.password = hash
-			next()
-		})
-		.catch(next)
+	this.password = hashPassword(this.password)
 })
 
 userSchema.statics = {
@@ -79,7 +70,7 @@ userSchema.statics = {
 				user.picture = picture
 				return user.save()
 			} else {
-				const password = randtoken.generate(16)
+				const password = generate(16)
 				return this.create({
 					services: { [service]: id },
 					picture,
@@ -93,11 +84,6 @@ userSchema.statics = {
 }
 
 userSchema.plugin(gravatar)
-userSchema.plugin(projection, {
-	guest: ['id', 'name', 'picture'],
-	user: ['id', 'name', 'picture', 'createdAt'],
-	admin: ['id', 'name', 'picture', 'createdAt', 'role']
-})
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 
 const model = mongoose.model('User', userSchema)

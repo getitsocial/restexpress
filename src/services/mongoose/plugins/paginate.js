@@ -4,11 +4,13 @@ export default function paginate(schema, options) {
 		query,
 		select,
 		cursor,
-		{ view, populate }
+		{ permission, populate }
 	) {
 		const [count, rows] = await Promise.all([
 			this.countDocuments(query),
-			this.find(query, select, cursor).populate(populate)
+			this.find(query, select, cursor)
+				.populate(populate)
+				.lean()
 		])
 
 		// Start at page 1
@@ -16,7 +18,7 @@ export default function paginate(schema, options) {
 		const nextPage = page * cursor.limit === count ? null : page + 1
 		const prevPage = page === 1 ? null : page - 1
 		return {
-			rows: view ? rows.map(row => row.view(view)) : rows,
+			rows: permission ? permission.filter(rows) : rows,
 			count,
 			nextPage,
 			prevPage,

@@ -5,6 +5,7 @@ import { doorman } from 's/auth'
 import { addAuthor } from 's/request'
 import { create, getAll, getOne, update, destroy } from './controller'
 import { schema } from './model'
+import accessControl from './access'
 export Message, { schema } from './model'
 
 const { content } = schema.tree
@@ -30,8 +31,12 @@ router.post(
 			minlength: 2
 		}
 	}),
-	doorman(['user', 'admin']),
+	doorman(['guest', 'user']),
 	addAuthor({ required: true, addBody: true }),
+	accessControl.check({
+		resource: 'message',
+		action: 'create'
+	}),
 	create
 )
 
@@ -44,7 +49,15 @@ router.post(
  * @apiSuccess {Object[]} messages List of messages.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get('/', doorman(['guest', 'user']), query(), getAll)
+router.get(
+	'/',
+	query(),
+	accessControl.check({
+		resource: 'message',
+		action: 'read'
+	}),
+	getAll
+)
 
 /**
  * @api {get} /messages/:id Retrieve message
@@ -55,7 +68,14 @@ router.get('/', doorman(['guest', 'user']), query(), getAll)
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
  */
-router.get('/:id', doorman(['user']), getOne)
+router.get(
+	'/:id',
+	accessControl.check({
+		resource: 'message',
+		action: 'read'
+	}),
+	getOne
+)
 
 /**
  * @api {put} /messages/:id Update message
@@ -66,7 +86,20 @@ router.get('/:id', doorman(['user']), getOne)
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
  */
-router.put('/:id', body({ content }), update)
+router.put(
+	'/:id',
+	accessControl.check({
+		resource: 'message',
+		action: 'update',
+		checkOwnerShip: true,
+		operands: [
+			{ source: 'user', key: '_id' },
+			{ source: 'params', key: 'author' }
+		]
+	}),
+	body({ content }),
+	update
+)
 
 /**
  * @api {delete} /messages/:id Delete message
@@ -75,6 +108,18 @@ router.put('/:id', body({ content }), update)
  * @apiSuccess (Success 204) 204 No Content.
  * @apiError 404 Message not found.
  */
-router.delete('/:id', destroy)
+router.delete(
+	'/:id',
+	accessControl.check({
+		resource: 'message',
+		action: 'delete',
+		checkOwnerShip: true,
+		operands: [
+			{ source: 'user', key: '_id' },
+			{ source: 'params', key: 'author' }
+		]
+	}),
+	destroy
+)
 
 export default router

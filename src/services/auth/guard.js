@@ -1,4 +1,4 @@
-import { sign as signJWT, decode } from 'jsonwebtoken'
+import { decode } from 'jsonwebtoken'
 import { createClient } from 'redis'
 import { default as JWTR } from 'jwt-redis'
 import eJWT from 'express-jwt'
@@ -28,8 +28,6 @@ export const roles = ['guest', 'user', 'admin']
 export const sign = async ({ _id, role }) =>
 	jwtr.sign({ _id, role }, secret, { expiresIn: '8d' })
 
-// export const signGuest = async () => signJWT({}, secret, { expiresIn: '8d' })
-
 export const decodeJWT = async token => decode(token)
 
 // remove jti from redis
@@ -48,7 +46,7 @@ const isGuestRole = (passedRoles, res, next) => {
 }
 
 // Main middleware validator
-export const doorman = passedRoles => [
+export const doorman = (passedRoles, accessControl) => [
 	eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } }),
 	(req, res, next) =>
 		roles.some(r => passedRoles.includes(r)) &&
@@ -56,6 +54,8 @@ export const doorman = passedRoles => [
 			? next()
 			: isGuestRole(passedRoles, res, next)
 ]
+
+export const addUser = eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } })
 
 export const masterman = () => (req, res, next) => {
 	// Check if host exist in json

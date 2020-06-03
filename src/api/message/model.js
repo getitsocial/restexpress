@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-import { paginate, projection } from 's/mongoose'
+import { paginate } from 's/mongoose'
 
 const messageSchema = new Schema(
 	{
@@ -24,11 +24,6 @@ const messageSchema = new Schema(
 	}
 )
 
-messageSchema.plugin(projection, {
-	guest: ['id', 'content'],
-	user: ['id', 'content', 'author'],
-	admin: ['id', 'content', 'author', 'createdAt']
-})
 messageSchema.plugin(paginate)
 const model = mongoose.model('Message', messageSchema)
 

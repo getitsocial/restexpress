@@ -2,16 +2,10 @@ import mongoose from 'mongoose'
 import { mongo } from '~/config'
 export paginate from './plugins/paginate'
 export gravatar from './plugins/gravatar'
-export projection from './plugins/projection'
 
 Object.keys(mongo.options).forEach(key => {
 	mongoose.set(key, mongo.options[key])
 })
-
-/* istanbul ignore next */
-mongoose.Types.ObjectId.prototype.view = function() {
-	return { id: this.toString() }
-}
 
 /* istanbul ignore next */
 mongoose.connection.on('error', err => {
