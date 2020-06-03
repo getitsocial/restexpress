@@ -1,6 +1,6 @@
 export const addAuthor = (options) => (req, res, next) => {
 	const { user } = req
-	const { required = true, addBody = false, addReq = false } = options ?? {}
+	const { required = true, addBody = true, addReq = true } = options ?? {}
 	
 	if (!user && !required) {
 		next()
