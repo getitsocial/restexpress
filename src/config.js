@@ -26,7 +26,8 @@ const config = {
 			options: {
 				useNewUrlParser: true,
 				useUnifiedTopology: true
-			}
+			},
+			uri: requireProcessEnv('MONGODB_URI')
 		},
 		redis: {
 			url: requireProcessEnv('REDIS_URL')
