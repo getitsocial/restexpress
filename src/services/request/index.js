@@ -1,12 +1,9 @@
-export const addAuthor = options => (req, res, next) => {
-	const {
-		bodymen: { body },
-		user
-	} = req
-	const { required = true, addBody = false, addReq = false } = options ?? {}
-
+export const addAuthor = (options) => (req, res, next) => {
+	const { user } = req
+	const { required = true, addBody = true, addReq = true } = options ?? {}
+	
 	if (!user && !required) {
-		return next()
+		next()
 	}
 
 	if (!user && required) {
@@ -14,7 +11,7 @@ export const addAuthor = options => (req, res, next) => {
 	}
 
 	if (addBody) {
-		body.author = user
+		req.body.author = user		
 	}
 
 	if (addReq) {

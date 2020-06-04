@@ -27,7 +27,8 @@ const config = {
 			options: {
 				useNewUrlParser: true,
 				useUnifiedTopology: true
-			}
+			},
+			uri: requireProcessEnv('MONGODB_URI')
 		},
 		redis: {
 			url: requireProcessEnv('REDIS_URL')
@@ -35,6 +36,9 @@ const config = {
 		rateLimiter: {
 			windowMs: 15 * 60 * 1000, // 15 minutes
 			max: 100 // limit each IP to 100 requests per windowMs
+		},
+		bugsnag: {
+			secret: requireProcessEnv('BUGSNAG_API_KEY')
 		}
 	},
 	test: {},

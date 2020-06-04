@@ -11,5 +11,4 @@ app.listen(port, () => {
 	console.log(`Server started on ${ip}:${port}`)
 })
 
-// Export fot test
 export default app
