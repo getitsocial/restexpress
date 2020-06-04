@@ -2,15 +2,13 @@ import AccessControl from 'accesscontrol'
 import AccessControlMiddleware from 's/auth/accessControl'
 
 const ac = new AccessControl()
-const endpoint = 'message'
+const endpoint = 'user'
 
 // Docs: https://github.com/onury/accesscontrol#readme
 // Api Docs: https://onury.io/accesscontrol/?api=ac
 
 // Guest
-ac.grant('guest')
-	.readAny(endpoint, ['_id', 'content', 'author.name', 'author.picture'])
-	.createAny(endpoint)
+ac.grant('guest').readAny(endpoint, ['_id', 'name', 'picture'])
 
 // User
 ac.grant('user')
@@ -21,7 +19,8 @@ ac.grant('user')
 // Admin
 ac.grant('admin')
 	.extend('user')
-	.updateAny(endpoint, ['content'])
+	.readAny(endpoint, ['_id', 'name', 'picture', 'email', 'role'])
+	.updateAny(endpoint)
 	.deleteAny(endpoint)
 
 const accessControlMiddleware = new AccessControlMiddleware(ac)

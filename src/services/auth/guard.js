@@ -46,16 +46,16 @@ const isGuestRole = (passedRoles, res, next) => {
 }
 
 // Main middleware validator
-export const doorman = (passedRoles, accessControl) => [
+export const doorman = passedRoles => [
 	eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } }),
-	(req, res, next) =>
-		roles.some(r => passedRoles.includes(r)) &&
-		passedRoles.includes(req.user?.role)
+	(req, res, next) => {
+		if (!passedRoles) throw new Error('Please set roles in config')
+		return roles.some(r => passedRoles.includes(r)) &&
+			passedRoles.includes(req.user?.role)
 			? next()
 			: isGuestRole(passedRoles, res, next)
+	}
 ]
-
-export const addUser = eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } })
 
 export const masterman = () => (req, res, next) => {
 	// Check if host exist in json

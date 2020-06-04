@@ -3,19 +3,15 @@ import { success, notFound } from 's/response'
 import { Message } from '.'
 
 // Get all
-export const getAll = async (
-	{ querymen: { query, select, cursor }, user, permission },
-	res,
-	next
-) => {
+export const getAll = async ({ querymen, user, permission }, res, next) => {
 	try {
-		const messages = await Message.paginate(query, select, cursor, {
+		const messages = await Message.paginate(querymen, {
 			permission,
 			populate: 'author'
 		})
 		await success(res)(messages)
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
 
@@ -24,9 +20,9 @@ export const getOne = async ({ params: { id }, permission }, res, next) => {
 	try {
 		const message = await Message.findById(id).lean()
 		await notFound(res)(message)
-		await success(res)(message ? permission.filter(message) : null)
+		await success(res)(permission.filter(message))
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
 
@@ -34,9 +30,9 @@ export const getOne = async ({ params: { id }, permission }, res, next) => {
 export const create = async ({ bodymen: { body }, permission }, res, next) => {
 	try {
 		const message = await Message.create(body)
-		await success(res, 201)(permission.filter(message.toObject()))
+		await success(res, 201)(permission.filter(message.toJSON()))
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
 
@@ -47,29 +43,19 @@ export const update = async (
 	next
 ) => {
 	try {
-		const message = await Message.findById(params.id)
-		await notFound(res)(message)
-		message => (message ? merge(message, body).save() : null)
-		await success(
-			res,
-			204
-		)(message ? permission.filter(message.toObject()) : null)
+		const message = await Message.findOneAndUpdate({ _id: params.id }, body)
+		await success(res, 204)(permission.filter(message.toJSON()))
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
 
 // Delete
 export const destroy = async ({ params: { id }, permission }, res, next) => {
 	try {
-		const message = await Message.findById(id)
-		await notFound(res)(message)
-		message ? await message.remove() : null
-		await success(
-			res,
-			204
-		)(message ? permission.filter(message.toObject()) : null)
+		await Message.deleteOne({ _id: id })
+		await success(res, 204)
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }

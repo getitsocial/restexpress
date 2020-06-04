@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { doorman } from 's/auth'
 import { addAuthor } from 's/request'
 import { create, getAll, getOne, update, destroy } from './controller'
 import { schema } from './model'
@@ -24,6 +23,7 @@ const router = new Router()
  */
 router.post(
 	'/',
+	// doorman(['guest', 'user', 'admin']),
 	body({
 		content: {
 			type: String,
@@ -31,8 +31,7 @@ router.post(
 			minlength: 2
 		}
 	}),
-	doorman(['guest', 'user']),
-	addAuthor({ required: true, addBody: true }),
+	addAuthor({ required: false, addBody: true }),
 	accessControl.check({
 		resource: 'message',
 		action: 'create'
@@ -90,12 +89,7 @@ router.put(
 	'/:id',
 	accessControl.check({
 		resource: 'message',
-		action: 'update',
-		checkOwnerShip: true,
-		operands: [
-			{ source: 'user', key: '_id' },
-			{ source: 'params', key: 'author' }
-		]
+		action: 'update'
 	}),
 	body({ content }),
 	update
@@ -112,12 +106,7 @@ router.delete(
 	'/:id',
 	accessControl.check({
 		resource: 'message',
-		action: 'delete',
-		checkOwnerShip: true,
-		operands: [
-			{ source: 'user', key: '_id' },
-			{ source: 'params', key: 'author' }
-		]
+		action: 'delete'
 	}),
 	destroy
 )

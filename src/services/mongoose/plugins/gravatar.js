@@ -1,6 +1,9 @@
-import crypto from 'crypto'
-
 // eslint-disable-next-line no-unused-vars
+import crypto from 'crypto'
+/**
+ * This function replace the default userpicture with a gravatar
+ * @param {email} email input of user
+ */
 export default function gravatar(schema, options) {
 	schema.path('email').set(function(email) {
 		if (!this.picture || this.picture.indexOf('https://gravatar.com') === 0) {

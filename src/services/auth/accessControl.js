@@ -62,7 +62,6 @@ class AccessControlMiddleware {
 				const firstOperand = req[operands[0].source][operands[0].key]
 
 				const secondOperand = req[operands[1].source][operands[1].key]
-
 				if (firstOperand.toString() === secondOperand.toString()) {
 					permission = permission[actions.own](resource)
 				} else {
@@ -76,7 +75,7 @@ class AccessControlMiddleware {
 				req.permission = permission
 				return next()
 			} else {
-				return res.status(403).send()
+				return res.status(401).end()
 			}
 		}
 	}

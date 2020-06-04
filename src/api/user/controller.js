@@ -1,41 +1,40 @@
 import { success, notFound } from 's/response/'
 import { User } from '.'
 
-export const index = async (
-	{ querymen: { query, select, cursor } },
-	res,
-	next
-) => {
+export const index = async ({ querymen, permission }, res, next) => {
 	try {
-		const users = await User.find(query, select, cursor)
-		await success(res)(users => users.map(user => user.view()))
+		const users = await User.paginate(querymen, {
+			permission,
+			populate: 'author'
+		})
+		await success(res)(users)
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
 
-export const show = async ({ params }, res, next) => {
+export const show = async ({ params, permission }, res, next) => {
 	try {
-		const user = await User.findById(params.id)
-		await success(res)(user ? user.view() : null)
+		const user = await User.findById(params.id).lean()
+		await success(res)(permission.filter(user))
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
 
-export const showMe = async ({ user: { _id } }, res) => {
+export const showMe = async ({ user: { _id }, permission }, res) => {
 	try {
-		const user = await User.findById(_id)
-		await success(res)(user ? user.view(true) : null)
+		const user = await User.findById(_id).lean()
+		await success(res)(permission.filter(user))
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
 
-export const create = async ({ bodymen: { body } }, res, next) => {
+export const create = async ({ bodymen: { body }, permission }, res, next) => {
 	try {
 		const user = await User.create(body)
-		success(res, 201)(user.view(true))
+		success(res, 201)(permission.filter(user))
 	} catch (error) {
 		/* istanbul ignore else */
 		if (error.name === 'MongoError' && error.code === 11000) {
@@ -45,37 +44,26 @@ export const create = async ({ bodymen: { body } }, res, next) => {
 				message: 'email already registered'
 			})
 		} else {
-			next(error)
+			return next(error)
 		}
 	}
 }
 
 export const update = async (
-	{ bodymen: { body }, params, user },
+	{ bodymen: { body }, params, user, permission },
 	res,
 	next
 ) => {
 	try {
-		const result = await User.findById(params.id === 'me' ? user.id : params.id)
-		await notFound(res)(result)
-
-		const isAdmin = user.role === 'admin'
-		const isSelfUpdate = user.id === result.id
-		if (!isSelfUpdate && !isAdmin) {
-			res.status(401).json({
-				valid: false,
-				message: 'You can\'t change other user\'s data'
-			})
-		}
-		result => (result ? merge(result, body).save() : null)
-		await success(res)(result ? result.view(true) : null)
+		const result = await User.findOneAndUpdate({ _id: params.id }, body)
+		await success(res, 204)(permission.filter(result.toJSON()))
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
 
 export const updatePassword = async (
-	{ bodymen: { body }, params, user },
+	{ bodymen: { body }, params, user, permission },
 	res,
 	next
 ) => {
@@ -91,19 +79,17 @@ export const updatePassword = async (
 			})
 		}
 		result => (result ? user.set({ password: body.password }).save() : null)
-		await success(res)(result ? result.view(true) : null)
+		await success(res)(permission.filter(result))
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }
 
 export const destroy = async ({ params }, res, next) => {
 	try {
-		const user = await User.findById(params.id)
-		await notFound(res)(user)
-		result => (result ? user.remove() : null)
+		await User.deleteOne({ _id: id })
 		await success(res, 204)
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
 }

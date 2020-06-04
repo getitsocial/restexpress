@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
 import { generate } from 'rand-token'
-import { gravatar } from 's/mongoose'
+import { gravatar, paginate } from 's/mongoose'
 import { hashPassword } from 's/auth'
 import { env } from '~/config'
 
@@ -84,6 +84,7 @@ userSchema.statics = {
 }
 
 userSchema.plugin(gravatar)
+userSchema.plugin(paginate)
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 
 const model = mongoose.model('User', userSchema)

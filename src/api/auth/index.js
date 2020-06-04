@@ -38,7 +38,7 @@ router.post(
  * @apiGroup Auth
  * @apiError 401 Invalid credentials.
  */
-router.post('/logout', doorman(['user', 'admin']), logout)
+router.post('/logout', logout)
 
 /**
  * @api {post} /auth/:provider Authenticate with Facebook or Google

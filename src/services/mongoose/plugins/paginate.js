@@ -1,9 +1,13 @@
 // eslint-disable-next-line no-unused-vars
+/**
+ * This adds the pagination function
+ * @param {querymen} querymen input
+ * @param {options} options input
+ * @returns {object} rows, count, nextPage, PrevPage, page
+ */
 export default function paginate(schema, options) {
 	schema.statics.paginate = async function(
-		query,
-		select,
-		cursor,
+		{ query, select, cursor },
 		{ permission, populate }
 	) {
 		const [count, rows] = await Promise.all([
