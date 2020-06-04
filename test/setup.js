@@ -2,6 +2,7 @@ import { EventEmitter } from 'events'
 import MongodbMemoryServer from 'mongodb-memory-server'
 import mongoose from 's/mongoose'
 import { redisClient } from 's/auth'
+import { mongo } from '~/config'
 
 EventEmitter.defaultMaxListeners = Infinity
 
@@ -28,7 +29,7 @@ beforeAll(async () => {
 
 	mongoServer = new MongodbMemoryServer()
 	const mongoUri = await mongoServer.getConnectionString()
-	await mongoose.connect(mongoUri, {
+	await mongoose.connect(mongo.uri, {
 		useNewUrlParser: true, 
 		useUnifiedTopology: true,
 		useCreateIndex: true

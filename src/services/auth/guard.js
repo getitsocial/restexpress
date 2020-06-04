@@ -41,7 +41,9 @@ export const destroy = async req => {
 
 // Check if passed values include guest role
 const isGuestRole = (passedRoles, res, next) => {
-	if (!passedRoles.includes('guest')) res.status(401).end()
+	if (!passedRoles.includes('guest')) {
+		res.status(401).end()
+	}
 	next()
 }
 
