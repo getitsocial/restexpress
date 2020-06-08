@@ -8,21 +8,23 @@
 export default function paginate(schema, options) {
 	schema.statics.paginate = async function(
 		{ query, select, cursor },
-		{ permission, populate }
+		{ populate, ability }
 	) {
 		const [count, rows] = await Promise.all([
 			this.countDocuments(query),
-			this.find(query, select, cursor)
+			this.accessibleBy(ability)
+				.find(query, select, cursor)
+				.select(ability ? this.accessibleFieldsBy(ability) : '')
 				.populate(populate)
 				.lean()
 		])
-
+		console.log(this.accessibleFieldsBy(ability))
 		// Start at page 1
 		const page = Math.floor(cursor.skip / cursor.limit) + 1
 		const nextPage = page * cursor.limit === count ? null : page + 1
 		const prevPage = page === 1 ? null : page - 1
 		return {
-			rows: permission ? permission.filter(rows) : rows,
+			rows,
 			count,
 			nextPage,
 			prevPage,

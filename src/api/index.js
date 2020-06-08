@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { env, mongo, port, ip, apiRoot, roles } from '~/config'
+import { env, mongo, port, ip, apiRoot } from '~/config'
 import auth from './auth'
 import user from './user'
-import message from './message'
-import { doorman } from 's/auth'
+import message, { ability } from './message'
+import { doorman } from '~/services/auth'
 
 const router = new Router()
 
@@ -31,7 +31,7 @@ const router = new Router()
  * @apiParam {String[]} [fields] Fields to be returned.
  */
 router.use('/auth', auth)
-router.use('/users', doorman(roles), user)
-router.use('/messages', doorman(roles), message)
+router.use('/users', user)
+router.use('/messages', doorman(ability), message)
 
 export default router

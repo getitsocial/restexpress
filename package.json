@@ -31,9 +31,10 @@
 		"supertest": "^4.0.2"
 	},
 	"dependencies": {
-		"accesscontrol": "^2.2.1",
 		"@bugsnag/js": "^7.1.1",
 		"@bugsnag/plugin-express": "^7.1.1",
+		"@casl/ability": "^4.1.4",
+		"@casl/mongoose": "^3.0.2",
 		"babel-eslint": "^10.1.0",
 		"babel-jest": "^26.0.1",
 		"bcryptjs": "^2.4.3",

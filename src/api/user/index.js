@@ -3,7 +3,6 @@ import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { masterman } from 's/auth'
 import { schema } from './model'
-import accessControl from './access'
 export User, { schema } from './model'
 import {
 	index,
@@ -30,15 +29,7 @@ const { email, password, name, picture, role } = schema.tree
  * @apiPermission user
  * @apiError 401 user access only.
  */
-router.get(
-	'/',
-	query(),
-	accessControl.check({
-		resource: 'user',
-		action: 'read'
-	}),
-	index
-)
+router.get('/', query(), index)
 
 /**
  * @api {get} /users/me Retrieve current user
@@ -48,14 +39,7 @@ router.get(
  * @apiParam {String} access_token User access_token.
  * @apiSuccess {Object} user User's data.
  */
-router.get(
-	'/me',
-	accessControl.check({
-		resource: 'user',
-		action: 'read'
-	}),
-	showMe
-)
+router.get('/me', showMe)
 
 /**
  * @api {get} /users/:id Retrieve user
@@ -65,19 +49,7 @@ router.get(
  * @apiSuccess {Object} user User's data.
  * @apiError 404 User not found.
  */
-router.get(
-	'/:id',
-	accessControl.check({
-		resource: 'user',
-		action: 'read',
-		checkOwnerShip: true,
-		operands: [
-			{ source: 'user', key: '_id' },
-			{ source: 'params', key: 'id' }
-		]
-	}),
-	show
-)
+router.get('/:id', show)
 
 /**
  * @api {post} /users Create user
@@ -99,10 +71,6 @@ router.post(
 	'/',
 	masterman(),
 	body({ email, password, name, picture, role }),
-	accessControl.check({
-		resource: 'user',
-		action: 'create'
-	}),
 	create
 )
 
@@ -119,20 +87,7 @@ router.post(
  * @apiError 401 Current user or admin access only.
  * @apiError 404 User not found.
  */
-router.put(
-	'/:id',
-	body({ name, picture }),
-	accessControl.check({
-		resource: 'user',
-		action: 'update',
-		checkOwnerShip: true,
-		operands: [
-			{ source: 'user', key: '_id' },
-			{ source: 'params', key: 'id' }
-		]
-	}),
-	update
-)
+router.put('/:id', body({ name, picture }), update)
 
 /**
  * @api {put} /users/:id/password Update password
@@ -145,20 +100,7 @@ router.put(
  * @apiError 401 Current user access only.
  * @apiError 404 User not found.
  */
-router.put(
-	'/:id/password',
-	body({ password }),
-	accessControl.check({
-		resource: 'user',
-		action: 'update',
-		checkOwnerShip: true,
-		operands: [
-			{ source: 'user', key: '_id' },
-			{ source: 'params', key: 'id' }
-		]
-	}),
-	updatePassword
-)
+router.put('/:id/password', body({ password }), updatePassword)
 
 /**
  * @api {delete} /users/:id Delete user
@@ -170,18 +112,6 @@ router.put(
  * @apiError 401 Admin access only.
  * @apiError 404 User not found.
  */
-router.delete(
-	'/:id',
-	accessControl.check({
-		resource: 'user',
-		action: 'delete',
-		checkOwnerShip: true,
-		operands: [
-			{ source: 'user', key: '_id' },
-			{ source: 'params', key: 'id' }
-		]
-	}),
-	destroy
-)
+router.delete('/:id', destroy)
 
 export default router

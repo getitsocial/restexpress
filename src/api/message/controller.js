@@ -3,10 +3,10 @@ import { success, notFound } from 's/response'
 import { Message } from '.'
 
 // Get all
-export const getAll = async ({ querymen, user, permission }, res, next) => {
+export const getAll = async ({ querymen, user, ability }, res, next) => {
 	try {
 		const messages = await Message.paginate(querymen, {
-			permission,
+			ability,
 			populate: 'author'
 		})
 		await success(res)(messages)
@@ -16,11 +16,11 @@ export const getAll = async ({ querymen, user, permission }, res, next) => {
 }
 
 // Get One
-export const getOne = async ({ params: { id }, permission }, res, next) => {
+export const getOne = async ({ params: { id } }, res, next) => {
 	try {
 		const message = await Message.findById(id).lean()
 		await notFound(res)(message)
-		await success(res)(permission.filter(message))
+		await success(res)(message)
 	} catch (error) {
 		return next(error)
 	}
@@ -30,7 +30,7 @@ export const getOne = async ({ params: { id }, permission }, res, next) => {
 export const create = async ({ bodymen: { body }, permission }, res, next) => {
 	try {
 		const message = await Message.create(body)
-		await success(res, 201)(permission.filter(message.toJSON()))
+		await success(res, 201)(message.toJSON())
 	} catch (error) {
 		return next(error)
 	}
@@ -44,14 +44,14 @@ export const update = async (
 ) => {
 	try {
 		const message = await Message.findOneAndUpdate({ _id: params.id }, body)
-		await success(res, 204)(permission.filter(message.toJSON()))
+		await success(res, 204)(message.toJSON())
 	} catch (error) {
 		return next(error)
 	}
 }
 
 // Delete
-export const destroy = async ({ params: { id }, permission }, res, next) => {
+export const destroy = async ({ params: { id } }, res, next) => {
 	try {
 		await Message.deleteOne({ _id: id })
 		await success(res, 204)

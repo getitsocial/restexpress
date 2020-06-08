@@ -1,3 +1,4 @@
+import { accessibleRecordsPlugin, accessibleFieldsPlugin } from '@casl/mongoose'
 import mongoose, { Schema } from 'mongoose'
 import { paginate } from 's/mongoose'
 
@@ -25,6 +26,9 @@ const messageSchema = new Schema(
 )
 
 messageSchema.plugin(paginate)
+messageSchema.plugin(accessibleRecordsPlugin)
+messageSchema.plugin(accessibleFieldsPlugin)
+
 const model = mongoose.model('Message', messageSchema)
 
 export const schema = model.schema

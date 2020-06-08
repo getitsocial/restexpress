@@ -17,18 +17,10 @@ const config = {
 		ip: process.env.IP || '0.0.0.0',
 		apiRoot: process.env.API_ROOT || '/api',
 		masterKey: requireProcessEnv('MASTER_KEY'),
-		roles: ['guest', 'user', 'admin'],
 		jwt: {
 			secret: requireProcessEnv('JWT_SECRET'),
 			credentialsRequired: false,
 			getToken: req => extractToken(req)
-		},
-		mongo: {
-			options: {
-				useNewUrlParser: true,
-				useUnifiedTopology: true
-			},
-			uri: requireProcessEnv('MONGODB_URI')
 		},
 		redis: {
 			url: requireProcessEnv('REDIS_URL')
@@ -41,7 +33,17 @@ const config = {
 			secret: requireProcessEnv('BUGSNAG_API_KEY')
 		}
 	},
-	test: {},
+	test: {
+		mongo: {
+			uri: 'mongodb://localhost/testgenerator-test',
+			options: {
+				debug: true,
+				useCreateIndex: true,
+				useNewUrlParser: true,
+				useUnifiedTopology: true
+			}
+		}
+	},
 	development: {
 		mongo: {
 			uri: 'mongodb://localhost/testgenerator-dev',

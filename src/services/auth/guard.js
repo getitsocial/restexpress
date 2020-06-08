@@ -39,24 +39,10 @@ export const destroy = async req => {
 	await destroyJTI(jti)
 }
 
-// Check if passed values include guest role
-const isGuestRole = (passedRoles, res, next) => {
-	if (!passedRoles.includes('guest')) {
-		res.status(401).end()
-	}
-	next()
-}
-
 // Main middleware validator
-export const doorman = passedRoles => [
+export const doorman = ability => [
 	eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } }),
-	(req, res, next) => {
-		if (!passedRoles) throw new Error('Please set roles in config')
-		return roles.some(r => passedRoles.includes(r)) &&
-			passedRoles.includes(req.user?.role)
-			? next()
-			: isGuestRole(passedRoles, res, next)
-	}
+	ability
 ]
 
 export const masterman = () => (req, res, next) => {

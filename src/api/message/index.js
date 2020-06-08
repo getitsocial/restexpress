@@ -4,9 +4,8 @@ import { middleware as body } from 'bodymen'
 import { addAuthor } from 's/request'
 import { create, getAll, getOne, update, destroy } from './controller'
 import { schema } from './model'
-import accessControl from './access'
 export Message, { schema } from './model'
-
+export ability from './ability'
 const { content } = schema.tree
 const router = new Router()
 
@@ -32,10 +31,6 @@ router.post(
 		}
 	}),
 	addAuthor({ required: false, addBody: true }),
-	accessControl.check({
-		resource: 'message',
-		action: 'create'
-	}),
 	create
 )
 
@@ -48,15 +43,7 @@ router.post(
  * @apiSuccess {Object[]} messages List of messages.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get(
-	'/',
-	query(),
-	accessControl.check({
-		resource: 'message',
-		action: 'read'
-	}),
-	getAll
-)
+router.get('/', query(), getAll)
 
 /**
  * @api {get} /messages/:id Retrieve message
@@ -67,14 +54,7 @@ router.get(
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
  */
-router.get(
-	'/:id',
-	accessControl.check({
-		resource: 'message',
-		action: 'read'
-	}),
-	getOne
-)
+router.get('/:id', getOne)
 
 /**
  * @api {put} /messages/:id Update message
@@ -85,15 +65,7 @@ router.get(
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
  */
-router.put(
-	'/:id',
-	accessControl.check({
-		resource: 'message',
-		action: 'update'
-	}),
-	body({ content }),
-	update
-)
+router.put('/:id', body({ content }), update)
 
 /**
  * @api {delete} /messages/:id Delete message
@@ -102,13 +74,6 @@ router.put(
  * @apiSuccess (Success 204) 204 No Content.
  * @apiError 404 Message not found.
  */
-router.delete(
-	'/:id',
-	accessControl.check({
-		resource: 'message',
-		action: 'delete'
-	}),
-	destroy
-)
+router.delete('/:id', destroy)
 
 export default router
