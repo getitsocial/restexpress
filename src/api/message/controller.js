@@ -3,10 +3,9 @@ import { success, notFound } from 's/response'
 import { Message } from '.'
 
 // Get all
-export const getAll = async ({ querymen, user, ability }, res, next) => {
+export const getAll = async ({ querymen, user }, res, next) => {
 	try {
 		const messages = await Message.paginate(querymen, {
-			ability,
 			populate: 'author'
 		})
 		await success(res)(messages)
@@ -43,8 +42,10 @@ export const update = async (
 	next
 ) => {
 	try {
-		const message = await Message.findOneAndUpdate({ _id: params.id }, body)
-		await success(res, 204)(message.toJSON())
+		const message = await Message.findOneAndUpdate({ _id: params.id }, body, {
+			new: true
+		})
+		await success(res, 200)(message)
 	} catch (error) {
 		return next(error)
 	}

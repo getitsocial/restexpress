@@ -5,7 +5,6 @@ import { addAuthor } from 's/request'
 import { create, getAll, getOne, update, destroy } from './controller'
 import { schema } from './model'
 export Message, { schema } from './model'
-export ability from './ability'
 const { content } = schema.tree
 const router = new Router()
 

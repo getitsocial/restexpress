@@ -966,18 +966,6 @@
   resolved "https://registry.yarnpkg.com/@bugsnag/safe-json-stringify/-/safe-json-stringify-5.0.0.tgz#1c39847968b52f5c08b7c76754406f9d4446b292"
   integrity sha512-EdGnA7n2UmX9Z0e2tIU0biKz8tCgtjbY69KoyH3yiMzm7Q9sriIlN9bZjqhTOKzM0GdLSGrkyKWif08xWKyucA==
 
-"@casl/ability@^4.1.4":
-  version "4.1.4"
-  resolved "https://registry.yarnpkg.com/@casl/ability/-/ability-4.1.4.tgz#a04b1af062e2b43c69fb3595edacd70022af81ad"
-  integrity sha512-v9V/9EOkOKzqj6VndbGVgCzz3LCRfCZETQ5Mgwhz0Bwy7sPu4P+bwt6y8T1+83DOd8mJkhX1kD8Vq24LqimWzw==
-  dependencies:
-    sift "^13.0.0"
-
-"@casl/mongoose@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@casl/mongoose/-/mongoose-3.0.2.tgz#f8dfc43cc602f4e1399dbc904f3a77b2b293b608"
-  integrity sha512-NXjXMAOskdwpLnrscgpkPCTH4pQYE57mZ2wGGfMm6lceIMZ1n3qQKX90FTn2BPZAZDV2UbQQ5R4T24vG+tBJfw==
-
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -2788,6 +2776,15 @@ expect@^26.0.1:
     jest-message-util "^26.0.1"
     jest-regex-util "^26.0.0"
 
+express-acl@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/express-acl/-/express-acl-2.0.8.tgz#30a3d5c2307ebeef0721f2800b1e371348a2059c"
+  integrity sha512-mwJzjgmZi2YlNzORjfNDJoX/l9IdbGji0rpqczay8Kq1GeZFRgyyUbGEEOYYr8jZYNOPmSYQprCsCFuY/kDaBQ==
+  dependencies:
+    express-unless "^0.3.0"
+    js-yaml "^3.6.0"
+    object-path "^0.11.4"
+
 express-jwt@^5.3.3:
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/express-jwt/-/express-jwt-5.3.3.tgz#e557b4a63dd34c5ddd6ad81452738386314cc243"
@@ -4229,7 +4226,7 @@ jest@^26.0.1:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-yaml@^3.13.1:
+js-yaml@^3.13.1, js-yaml@^3.6.0:
   version "3.14.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.0.tgz#a7a34170f26a21bb162424d8adacb4113a69e482"
   integrity sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==
@@ -5017,6 +5014,11 @@ object-keys@^1.0.11, object-keys@^1.0.12, object-keys@^1.1.1:
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.1.1.tgz#1c47f272df277f3b1daf061677d9c82e2322c60e"
   integrity sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
 
+object-path@^0.11.4:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.4.tgz#370ae752fbf37de3ea70a861c23bba8915691949"
+  integrity sha1-NwrnUvvzfePqcKhhwju6iRVpGUk=
+
 object-visit@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/object-visit/-/object-visit-1.0.1.tgz#f79c4493af0c5377b59fe39d395e41042dd045bb"
@@ -5633,6 +5635,11 @@ repeat-string@^1.6.1:
   resolved "https://registry.yarnpkg.com/repeat-string/-/repeat-string-1.6.1.tgz#8dcae470e1c88abc2d600fff4a776286da75e637"
   integrity sha1-jcrkcOHIirwtYA//Sndihtp15jc=
 
+request-context@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/request-context/-/request-context-2.0.0.tgz#86017884cc9574d81fb23dcbc6c22c2b2520f1d0"
+  integrity sha1-hgF4hMyVdNgfsj3LxsIsKyUg8dA=
+
 request-promise-core@1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/request-promise-core/-/request-promise-core-1.1.3.tgz#e9a3c081b51380dfea677336061fea879a829ee9"
@@ -5962,11 +5969,6 @@ sift@7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/sift/-/sift-7.0.1.tgz#47d62c50b159d316f1372f8b53f9c10cd21a4b08"
   integrity sha512-oqD7PMJ+uO6jV9EQCl0LrRw1OwsiPsiFQR5AR30heR+4Dl7jBBbDLnNvWiak20tzZlSE1H7RB30SX/1j/YYT7g==
-
-sift@^13.0.0:
-  version "13.1.10"
-  resolved "https://registry.yarnpkg.com/sift/-/sift-13.1.10.tgz#53cd1052c0214dc5d28a931e154191cce5cba942"
-  integrity sha512-Z+7ZMTbnmbuVCwER+8jNerXpuJNYsxFSZf1er8VUqF/qYdgTrG5o5TQ7C6nWDycQY/TA1pczVCj58y5RvrUtrA==
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.3"

@@ -8,17 +8,14 @@
 export default function paginate(schema, options) {
 	schema.statics.paginate = async function(
 		{ query, select, cursor },
-		{ populate, ability }
+		{ populate }
 	) {
 		const [count, rows] = await Promise.all([
 			this.countDocuments(query),
-			this.accessibleBy(ability)
-				.find(query, select, cursor)
-				.select(ability ? this.accessibleFieldsBy(ability) : '')
+			this.find(query, select, cursor)
 				.populate(populate)
 				.lean()
 		])
-		console.log(this.accessibleFieldsBy(ability))
 		// Start at page 1
 		const page = Math.floor(cursor.skip / cursor.limit) + 1
 		const nextPage = page * cursor.limit === count ? null : page + 1

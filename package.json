@@ -33,8 +33,6 @@
 	"dependencies": {
 		"@bugsnag/js": "^7.1.1",
 		"@bugsnag/plugin-express": "^7.1.1",
-		"@casl/ability": "^4.1.4",
-		"@casl/mongoose": "^3.0.2",
 		"babel-eslint": "^10.1.0",
 		"babel-jest": "^26.0.1",
 		"bcryptjs": "^2.4.3",
@@ -45,6 +43,7 @@
 		"dotenv": "^8.2.0",
 		"eslint-plugin-jest": "^23.13.2",
 		"express": "^4.17.1",
+		"express-acl": "^2.0.8",
 		"express-jwt": "^5.3.3",
 		"express-rate-limit": "^5.1.3",
 		"helmet": "^3.22.0",
@@ -59,6 +58,7 @@
 		"rand-token": "^1.0.1",
 		"redis": "^3.0.2",
 		"request": "^2.88.2",
+		"request-context": "^2.0.0",
 		"request-promise": "^4.2.5"
 	},
 	"jest": {

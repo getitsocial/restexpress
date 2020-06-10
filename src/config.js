@@ -40,7 +40,8 @@ const config = {
 				debug: true,
 				useCreateIndex: true,
 				useNewUrlParser: true,
-				useUnifiedTopology: true
+				useUnifiedTopology: true,
+				useFindAndModify: true
 			}
 		}
 	},

@@ -16,9 +16,10 @@ export const verify = async (token, secret) => jwtr.verify(token, secret)
 const isRevokedCallback = async (req, res, done) => {
 	try {
 		await verify(extractToken(req), secret)
-		done(null, false)
+		return done(null, false)
 	} catch (error) {
-		done(null, true)
+		// console.log('teeest')
+		return done(null, true)
 	}
 }
 
@@ -40,10 +41,7 @@ export const destroy = async req => {
 }
 
 // Main middleware validator
-export const doorman = ability => [
-	eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } }),
-	ability
-]
+export const doorman = eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } })
 
 export const masterman = () => (req, res, next) => {
 	// Check if host exist in json

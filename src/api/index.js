@@ -2,8 +2,7 @@ import { Router } from 'express'
 import { env, mongo, port, ip, apiRoot } from '~/config'
 import auth from './auth'
 import user from './user'
-import message, { ability } from './message'
-import { doorman } from '~/services/auth'
+import message from './message'
 
 const router = new Router()
 
@@ -32,6 +31,6 @@ const router = new Router()
  */
 router.use('/auth', auth)
 router.use('/users', user)
-router.use('/messages', doorman(ability), message)
+router.use('/messages', message)
 
 export default router
