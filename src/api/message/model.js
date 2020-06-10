@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-import { paginate, accesscontrol } from 's/mongoose'
+import { paginate } from 's/mongoose'
 
 const messageSchema = new Schema(
 	{
@@ -25,7 +25,6 @@ const messageSchema = new Schema(
 )
 
 messageSchema.plugin(paginate)
-messageSchema.plugin(accesscontrol)
 
 const model = mongoose.model('Message', messageSchema)
 

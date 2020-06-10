@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { env, mongo, port, ip, apiRoot } from '~/config'
+import { doorman } from '~/services/auth/guard'
 import auth from './auth'
 import user from './user'
 import message from './message'
@@ -29,6 +30,8 @@ const router = new Router()
  * @apiParam {String[]} [sort=-createdAt] Order of returned items.
  * @apiParam {String[]} [fields] Fields to be returned.
  */
+
+router.use('*', doorman)
 router.use('/auth', auth)
 router.use('/users', user)
 router.use('/messages', message)

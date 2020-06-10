@@ -37,7 +37,7 @@ export const create = async ({ bodymen: { body }, permission }, res, next) => {
 
 // Put
 export const update = async (
-	{ bodymen: { body }, params, permission },
+	{ bodymen: { body }, params, user, permission },
 	res,
 	next
 ) => {

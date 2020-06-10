@@ -5,10 +5,8 @@ import rateLimit from 'express-rate-limit'
 import compression from 'compression'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
-import contextService from 'request-context'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
-import { doorman } from '~/services/auth/guard'
 import { env, rateLimiter, bugsnag } from '~/config'
 import acl from './acl'
 import Bugsnag from '@bugsnag/js'
@@ -36,17 +34,8 @@ export default (apiRoot, routes) => {
 		app.use(morgan('dev'))
 		app.use(bugsnagMiddleware.errorHandler)
 	}
-
 	app.use(bodyParser.urlencoded({ extended: false }))
 	app.use(bodyParser.json())
-	app.use(contextService.middleware('ctx'))
-	app.all('*', [
-		doorman,
-		function(req, res, next) {
-			contextService.set('ctx.req', req)
-			return next()
-		}
-	])
 	app.use(acl.authorize)
 	app.use(apiRoot, routes)
 	app.use(queryErrorHandler())
