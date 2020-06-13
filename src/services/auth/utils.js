@@ -56,5 +56,4 @@ export const hashPassword = async password => await hash(password, 9)
  * @param {string} password
  * @returns {Promise} The boolean compared return
  */
-export const comparePassword = async (password, comparePassword) =>
-	await compareSync(password, comparePassword)
+export const comparePassword = (password, comparePassword) => compareSync(password, comparePassword)

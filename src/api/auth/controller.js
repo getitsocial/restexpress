@@ -16,11 +16,7 @@ const signHandler = async (user, res) => {
 	success(res)({ _id, role, token })
 }
 
-export const authenticate = async (
-	{ body: { email, password } },
-	res,
-	next
-) => {
+export const authenticate = async ({ body: { email, password } }, res, next) => {
 	// Pass value
 	try {
 		// Find user
@@ -34,8 +30,10 @@ export const authenticate = async (
 				.end()
 
 		// Compare password
-		const comparedPassword = await comparePassword(password, user.password)
-		if (!comparedPassword) return errorHandler(res, next)
+		const comparedPassword = comparePassword(password, user.password)
+		if (!comparedPassword) {
+			return errorHandler(res, next)
+		}
 
 		// Sign in user
 		await signHandler(user, res)

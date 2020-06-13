@@ -51,10 +51,11 @@ const userSchema = new Schema(
 	}
 )
 
-userSchema.pre('save', function(next) {
+userSchema.pre('save', async function(next) {
 	if (!this.isModified('password')) return next()
 	/* istanbul ignore next */
-	this.password = hashPassword(this.password)
+	this.password = await hashPassword(this.password)
+	return next()
 })
 
 userSchema.statics = {
