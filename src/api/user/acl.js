@@ -5,7 +5,7 @@ const permissions = [
 			{
 				resource: 'users/*',
 				methods: ['POST', 'GET', 'PUT'],
-				action: 'deny'
+				action: 'allow'
 			}
 		]
 	}
