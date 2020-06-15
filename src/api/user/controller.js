@@ -34,7 +34,7 @@ export const showMe = async ({ user: { _id }, permission }, res) => {
 export const create = async ({ bodymen: { body }, permission }, res, next) => {
 	try {
 		const user = await User.create(body)
-		success(res, 201)(permission.filter(user))
+		success(res, 201)(user)
 	} catch (error) {
 		/* istanbul ignore else */
 		if (error.name === 'MongoError' && error.code === 11000) {

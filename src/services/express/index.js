@@ -11,6 +11,7 @@ import { env, rateLimiter, bugsnag } from '~/config'
 import acl from './acl'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginExpress from '@bugsnag/plugin-express'
+import { doorman } from '~/services/auth/guard'
 Bugsnag.start({
 	apiKey: bugsnag.secret,
 	plugins: [BugsnagPluginExpress]
@@ -36,6 +37,7 @@ export default (apiRoot, routes) => {
 	}
 	app.use(bodyParser.urlencoded({ extended: false }))
 	app.use(bodyParser.json())
+	app.use(doorman)
 	app.use(acl.authorize)
 	app.use(apiRoot, routes)
 	app.use(queryErrorHandler())

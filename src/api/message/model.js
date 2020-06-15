@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
-import { paginate } from 's/mongoose'
+import { paginate, checkOwnership } from 's/mongoose'
+import permissions from './acl'
 
 const messageSchema = new Schema(
 	{
@@ -25,7 +26,7 @@ const messageSchema = new Schema(
 )
 
 messageSchema.plugin(paginate)
-
+messageSchema.plugin(checkOwnership, { permissions })
 const model = mongoose.model('Message', messageSchema)
 
 export const schema = model.schema

@@ -18,6 +18,14 @@ export const extractToken = req => {
 	return null
 }
 
+export const extractMaster = req => {
+
+	// Extract JWT from Query
+	if (req.query?.master) return req.query.master
+
+	return null
+}
+
 /**
  * Validate Middleware - canot create user with another roles
  */

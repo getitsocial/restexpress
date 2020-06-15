@@ -1,7 +1,7 @@
 import { merge } from 'lodash'
 import { success, notFound } from 's/response'
 import { Message } from '.'
-
+import httpContext from 'express-http-context'
 // Get all
 export const getAll = async ({ querymen, user }, res, next) => {
 	try {
@@ -36,11 +36,7 @@ export const create = async ({ bodymen: { body }, permission }, res, next) => {
 }
 
 // Put
-export const update = async (
-	{ bodymen: { body }, params, user, permission },
-	res,
-	next
-) => {
+export const update = async ({ bodymen: { body }, user, params, permission }, res, next) => {
 	try {
 		const message = await Message.findOneAndUpdate({ _id: params.id }, body, {
 			new: true

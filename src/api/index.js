@@ -31,7 +31,6 @@ const router = new Router()
  * @apiParam {String[]} [fields] Fields to be returned.
  */
 
-router.use('*', doorman)
 router.use('/auth', auth)
 router.use('/users', user)
 router.use('/messages', message)

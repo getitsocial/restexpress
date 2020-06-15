@@ -14,7 +14,8 @@ acl.config({
 	rules: rules,
 	yml: true,
 	// The default role allows you to specify which role users will assume if they are not assigned any
-	defaultRole: 'guest'
+	defaultRole: 'guest',
+	roleSearchPath: 'user.role'
 })
 
 // TODO: acl.checkOwner(rules)

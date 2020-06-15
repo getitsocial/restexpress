@@ -3,16 +3,7 @@ import messageAcl from './message/acl'
 import authAcl from './auth/acl'
 
 const defaultPermissions = [
-	{
-		group: 'guest',
-		permissions: [
-			{
-				resource: '*',
-				methods: ['POST', 'GET', 'PUT'],
-				action: 'allow'
-			}
-		]
-	}
+
 ]
 
 const permissions = { ...groupBy([...defaultPermissions, ...messageAcl, ...authAcl], 'group') }
@@ -21,4 +12,5 @@ Object.keys(permissions).forEach((group) => {
 		return { group, permissions: accu.permissions.concat(curr.permissions)}
 	})
 })
+console.log(permissions.user.permissions)
 export default Object.values(permissions)

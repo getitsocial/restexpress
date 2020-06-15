@@ -2,9 +2,10 @@ import { decode } from 'jsonwebtoken'
 import { createClient } from 'redis'
 import { default as JWTR } from 'jwt-redis'
 import eJWT from 'express-jwt'
-import { extractToken } from 's/auth/utils'
+import { extractToken, extractMaster } from 's/auth/utils'
 import { redis, jwt, masterKey } from '~/config'
 import hosts from '~/hosts.json'
+import httpContext from 'express-http-context'
 export const redisClient = createClient(redis)
 const jwtr = new JWTR(redisClient)
 
@@ -43,11 +44,4 @@ export const destroy = async req => {
 // Main middleware validator
 export const doorman = eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } })
 
-export const masterman = () => (req, res, next) => {
-	// Check if host exist in json
-	const urlParser = url => new URL(url).host
-	const hostExist = hosts.some(h => urlParser(h.url) === req.get('host'))
-	return masterKey === extractToken(req) && hostExist
-		? next()
-		: res.status(401).end()
-}
+export const masterman = () => (req, res, next) =>  masterKey === extractMaster(req) ? next() : res.status(401).end()
