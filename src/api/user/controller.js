@@ -14,12 +14,11 @@ export const index = async ({ querymen, permission }, res, next) => {
 }
 
 export const show = async ({ params, permission }, res, next) => {
-	try {
-		const user = await User.findById(params.id).lean()
-		await success(res)(permission.filter(user))
-	} catch (error) {
-		return next(error)
-	}
+	User.findById(params.id).select(['name', 'email']).lean().then(async (result) => {
+		await success(res)(result)
+	}).catch((error) => {
+		next(error)
+	})
 }
 
 export const showMe = async ({ user: { _id }, permission }, res) => {
@@ -27,7 +26,7 @@ export const showMe = async ({ user: { _id }, permission }, res) => {
 		const user = await User.findById(_id).lean()
 		await success(res)(permission.filter(user))
 	} catch (error) {
-		return next(error)
+		next(error)
 	}
 }
 
@@ -49,17 +48,12 @@ export const create = async ({ bodymen: { body }, permission }, res, next) => {
 	}
 }
 
-export const update = async (
-	{ bodymen: { body }, params, user, permission },
-	res,
-	next
-) => {
-	try {
-		const result = await User.findOneAndUpdate({ _id: params.id }, body)
-		await success(res, 204)(permission.filter(result.toJSON()))
-	} catch (error) {
+export const update = async ({ bodymen: { body }, params, user, permission }, res, next) => {
+	User.findOneAndUpdate({ _id: params.id }, body).then(async (result) => {
+		await success(res, 200)(result)
+	}).catch((error) => {
 		return next(error)
-	}
+	})
 }
 
 export const updatePassword = async (

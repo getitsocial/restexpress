@@ -12,6 +12,8 @@ import acl from './acl'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginExpress from '@bugsnag/plugin-express'
 import { doorman } from '~/services/auth/guard'
+import httpContext from 'http-request-context'
+
 Bugsnag.start({
 	apiKey: bugsnag.secret,
 	plugins: [BugsnagPluginExpress]
@@ -26,6 +28,15 @@ const limiter = rateLimit(rateLimiter)
 export default (apiRoot, routes) => {
 	const app = express()
 	/* istanbul ignore next */
+	app.use(httpContext.middleware({
+		removeAfterClose: true,
+		removeAfterFinish: true
+	  })
+	)
+	app.use((req, res, next) => {
+		httpContext.set('method', req.method)
+		next()
+	})
 	if (env === 'production' || env === 'development') {
 		app.use(bugsnagMiddleware.requestHandler)
 		app.use(helmet())
@@ -38,6 +49,12 @@ export default (apiRoot, routes) => {
 	app.use(bodyParser.urlencoded({ extended: false }))
 	app.use(bodyParser.json())
 	app.use(doorman)
+	app.use((req, res, next) => {
+		setTimeout(() => {
+			httpContext.set('user', req.user)
+			next()
+		}, 300)
+	})
 	app.use(acl.authorize)
 	app.use(apiRoot, routes)
 	app.use(queryErrorHandler())

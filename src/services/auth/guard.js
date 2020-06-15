@@ -4,9 +4,8 @@ import { default as JWTR } from 'jwt-redis'
 import eJWT from 'express-jwt'
 import { extractToken, extractMaster } from 's/auth/utils'
 import { redis, jwt, masterKey } from '~/config'
-import hosts from '~/hosts.json'
-import httpContext from 'express-http-context'
 export const redisClient = createClient(redis)
+
 const jwtr = new JWTR(redisClient)
 
 // Get JWT Secret

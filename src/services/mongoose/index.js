@@ -3,6 +3,7 @@ import { mongo } from '~/config'
 export paginate from './plugins/paginate'
 export gravatar from './plugins/gravatar'
 export checkOwnership from './plugins/ownership'
+export select from './plugins/select'
 
 Object.keys(mongo.options).forEach(key => {
 	mongoose.set(key, mongo.options[key])

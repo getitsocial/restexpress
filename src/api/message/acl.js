@@ -6,7 +6,6 @@ const permissions = [
 				resource: 'messages/*',
 				methods: ['GET', 'POST'],
 				action: 'allow',
-				checkOwner: true, // <-- idea 1 - look on 24
 				view: ['content', 'author.name', 'author.picture'] // <-- idea 2 - look on 35
 			}
 		]
@@ -17,7 +16,8 @@ const permissions = [
 			{
 				resource: 'messages/*',
 				methods: ['GET', 'POST', 'PUT', 'DELETE'],
-				action: 'allow'
+				action: 'allow',
+				checkOwner: true
 			}
 		]
 	}

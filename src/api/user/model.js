@@ -1,9 +1,10 @@
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
 import { generate } from 'rand-token'
-import { gravatar, paginate } from 's/mongoose'
+import { gravatar, paginate, checkOwnership, select } from 's/mongoose'
 import { hashPassword } from 's/auth'
 import { env } from '~/config'
+import rules from './acl'
 
 const roles = ['guest', 'user', 'admin']
 
@@ -87,6 +88,8 @@ userSchema.statics = {
 userSchema.plugin(gravatar)
 userSchema.plugin(paginate)
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
+userSchema.plugin(checkOwnership, { rules })
+userSchema.plugin(select, { rules })
 
 const model = mongoose.model('User', userSchema)
 
