@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 import { paginate, checkOwnership } from 's/mongoose'
 import rules from './acl'
+import userAcl from 'a/user/acl'
 
 const messageSchema = new Schema(
 	{
@@ -25,7 +26,7 @@ const messageSchema = new Schema(
 	}
 )
 
-messageSchema.plugin(paginate, { rules })
+messageSchema.plugin(paginate, { rules, populateRules: { author: userAcl } })
 messageSchema.plugin(checkOwnership, { rules })
 const model = mongoose.model('Message', messageSchema)
 

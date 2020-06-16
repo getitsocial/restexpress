@@ -4,14 +4,13 @@ import { Message } from '.'
 import httpContext from 'express-http-context'
 // Get all
 export const getAll = async ({ querymen, user }, res, next) => {
-	try {
-		const messages = await Message.paginate(querymen, {
-			populate: 'author'
-		})
+	Message.paginate(querymen, {
+		populate: [{ path: 'author', select: { name: 1, email: 1 } }]
+	}).then(async (messages) => {
 		await success(res)(messages)
-	} catch (error) {
+	}).catch((error) => {
 		return next(error)
-	}
+	})
 }
 
 // Get One

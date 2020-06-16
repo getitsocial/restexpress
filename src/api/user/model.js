@@ -5,6 +5,7 @@ import { gravatar, paginate, checkOwnership, select } from 's/mongoose'
 import { hashPassword } from 's/auth'
 import { env } from '~/config'
 import rules from './acl'
+import userAcl from 'a/user/acl'
 
 const roles = ['guest', 'user', 'admin']
 
@@ -86,7 +87,7 @@ userSchema.statics = {
 }
 
 userSchema.plugin(gravatar)
-userSchema.plugin(paginate, { rules })
+userSchema.plugin(paginate, { rules, populateRules: { user: userAcl } })
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 userSchema.plugin(checkOwnership, { rules })
 userSchema.plugin(select, { rules })

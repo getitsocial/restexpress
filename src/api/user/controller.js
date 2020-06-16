@@ -2,7 +2,7 @@ import { success, notFound } from 's/response/'
 import { User } from '.'
 
 export const index = async ({ querymen }, res, next) => {
-	User.paginate(querymen, { populate: 'author'}).then(async (users) => {
+	User.paginate(querymen).then(async (users) => {
 		await success(res)(users)
 	}).catch((error) => {
 		return next(error)
