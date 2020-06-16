@@ -25,7 +25,7 @@ const messageSchema = new Schema(
 	}
 )
 
-messageSchema.plugin(paginate)
+messageSchema.plugin(paginate, { rules })
 messageSchema.plugin(checkOwnership, { rules })
 const model = mongoose.model('Message', messageSchema)
 

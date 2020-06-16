@@ -86,7 +86,7 @@ userSchema.statics = {
 }
 
 userSchema.plugin(gravatar)
-userSchema.plugin(paginate)
+userSchema.plugin(paginate, { rules })
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 userSchema.plugin(checkOwnership, { rules })
 userSchema.plugin(select, { rules })

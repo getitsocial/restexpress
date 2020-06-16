@@ -1,19 +1,15 @@
 import { success, notFound } from 's/response/'
 import { User } from '.'
 
-export const index = async ({ querymen, permission }, res, next) => {
-	try {
-		const users = await User.paginate(querymen, {
-			permission,
-			populate: 'author'
-		})
+export const index = async ({ querymen }, res, next) => {
+	User.paginate(querymen, { populate: 'author'}).then(async (users) => {
 		await success(res)(users)
-	} catch (error) {
+	}).catch((error) => {
 		return next(error)
-	}
+	})
 }
 
-export const show = async ({ params, permission }, res, next) => {
+export const show = async ({ params }, res, next) => {
 	User.findById(params.id).select(['name', 'email']).lean().then(async (result) => {
 		await success(res)(result)
 	}).catch((error) => {
@@ -21,16 +17,15 @@ export const show = async ({ params, permission }, res, next) => {
 	})
 }
 
-export const showMe = async ({ user: { _id }, permission }, res) => {
-	try {
-		const user = await User.findById(_id).lean()
-		await success(res)(permission.filter(user))
-	} catch (error) {
-		next(error)
-	}
+export const showMe = async ({ user: { _id } }, res) => {
+	User.findById(_id).lean().then(async (user) => {
+		await success(res)(user)
+	}).catch((error) => {
+		return next(error)
+	})
 }
 
-export const create = async ({ bodymen: { body }, permission }, res, next) => {
+export const create = async ({ bodymen: { body } }, res, next) => {
 	try {
 		const user = await User.create(body)
 		success(res, 201)(user)
@@ -48,7 +43,7 @@ export const create = async ({ bodymen: { body }, permission }, res, next) => {
 	}
 }
 
-export const update = async ({ bodymen: { body }, params, user, permission }, res, next) => {
+export const update = async ({ bodymen: { body }, params, user }, res, next) => {
 	User.findOneAndUpdate({ _id: params.id }, body).then(async (result) => {
 		await success(res, 200)(result)
 	}).catch((error) => {
@@ -57,7 +52,7 @@ export const update = async ({ bodymen: { body }, params, user, permission }, re
 }
 
 export const updatePassword = async (
-	{ bodymen: { body }, params, user, permission },
+	{ bodymen: { body }, params, user },
 	res,
 	next
 ) => {
