@@ -10,7 +10,7 @@ import httpContext from 'http-request-context'
 export default function paginate(schema, { rules }) {
 	schema.statics.paginate = async function({ query, cursor }, options) {
 
-		const { role, _id } = httpContext.get('user')
+		const { role } = httpContext.get('user') ?? { role: 'guest' }
 		const method = httpContext.get('method')
 		const populate = options?.populate
  		
