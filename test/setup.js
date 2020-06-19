@@ -25,35 +25,36 @@ global.parseFloat = parseFloat
 let mongoServer
 
 beforeAll(async () => {
-	jest.setTimeout(30000)
+    jest.setTimeout(30000)
 
-	mongoServer = new MongodbMemoryServer()
-	const mongoUri = await mongoServer.getConnectionString()
-	await mongoose.connect(mongo.uri, {
-		useNewUrlParser: true, 
-		useUnifiedTopology: true,
-		useCreateIndex: true
-	}, (err) => {
-		if (err) {
-			console.error(err)
-		}
-	})
+    mongoServer = new MongodbMemoryServer()
+    const mongoUri = await mongoServer.getConnectionString()
+    await mongoose.connect(mongo.uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+    }, (err) => {
+        if (err) {
+            console.error(err)
+        }
+    })
 })
 
 afterAll(async (done) => {
-	mongoose.connection.close()
-	mongoServer.stop()
-	redisClient.on('end', () => {
-		done()
-	})
-	redisClient.quit()
+    mongoose.connection.close()
+    mongoServer.stop()
+    redisClient.on('end', () => {
+        done()
+    })
+    redisClient.quit()
 })
 
-afterEach(async () => {
-	const { collections } = mongoose.connection
-	const promises = []
-	Object.keys(collections).forEach((collection) => {
-		promises.push(collections[collection].deleteMany())
-	})
-	await Promise.all(promises)
+afterEach(async (done) => {
+    const { collections } = mongoose.connection
+    const promises = []
+    Object.keys(collections).forEach((collection) => {
+        promises.push(collections[collection].deleteMany())
+    })
+    await Promise.all(promises)
+    done()
 })

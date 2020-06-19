@@ -14,20 +14,20 @@ const { secret } = jwt
 export const verify = async (token, secret) => jwtr.verify(token, secret)
 
 const isRevokedCallback = async (req, res, done) => {
-	try {
-		await verify(extractToken(req), secret)
-		return done(null, false)
-	} catch (error) {
-		// console.log('teeest')
-		return done(null, true)
-	}
+    try {
+        await verify(extractToken(req), secret)
+        return done(null, false)
+    } catch (error) {
+        // console.log('teeest')
+        return done(null, true)
+    }
 }
 
 // Define user roles
 export const roles = ['guest', 'user', 'admin']
 
 export const sign = async ({ _id, role }) =>
-	jwtr.sign({ _id, role }, secret, { expiresIn: '8d' })
+    jwtr.sign({ _id, role }, secret, { expiresIn: '8d' })
 
 export const decodeJWT = async token => decode(token)
 
@@ -36,8 +36,8 @@ export const destroyJTI = async jti => jwtr.destroy(jti, secret)
 
 // Destroy token from index
 export const destroy = async req => {
-	const { jti } = await decode(extractToken(req))
-	await destroyJTI(jti)
+    const { jti } = await decode(extractToken(req))
+    await destroyJTI(jti)
 }
 
 // Main middleware validator

@@ -20,17 +20,17 @@ const router = new Router()
  * @apiError 401 user access only.
  */
 router.post(
-	'/',
-	// doorman(['guest', 'user', 'admin']),
-	body({
-		content: {
-			type: String,
-			required: true,
-			minlength: 2
-		}
-	}),
-	addAuthor({ required: false, addBody: true }),
-	create
+    '/',
+    // doorman(['guest', 'user', 'admin']),
+    body({
+        content: {
+            type: String,
+            required: true,
+            minlength: 2
+        }
+    }),
+    addAuthor({ required: false, addBody: true }),
+    create
 )
 
 /**

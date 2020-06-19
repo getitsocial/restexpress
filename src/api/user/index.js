@@ -5,13 +5,13 @@ import { masterman } from 's/auth'
 import { schema } from './model'
 export User, { schema } from './model'
 import {
-	index,
-	showMe,
-	show,
-	create,
-	update,
-	updatePassword,
-	destroy
+    index,
+    showMe,
+    show,
+    create,
+    update,
+    updatePassword,
+    destroy
 } from './controller'
 
 const router = new Router()
@@ -68,10 +68,10 @@ router.get('/:id', show)
  * @apiError 409 Email already registered.
  */
 router.post(
-	'/',
-	masterman(),
-	body({ email, password, name, picture, role }),
-	create
+    '/',
+    masterman(),
+    body({ email, password, name, picture, role }),
+    create
 )
 
 /**

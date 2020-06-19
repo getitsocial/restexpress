@@ -8,45 +8,55 @@ import httpContext from 'http-request-context'
  * @returns {object} rows, count, nextPage, PrevPage, page
  */
 export default function paginate(schema, { rules }) {
-	schema.statics.paginate = async function({ query, cursor }, options) {
+    schema.statics.paginate = async function({ query, cursor }, options) {
+        try {
 
-		const { role } = httpContext.get('user') ?? { role: 'guest' }
-		const method = httpContext.get('method')
-		const populate = options?.populate
- 		
-		const { permissions } = rules.find(p => p.group === role)                
-		const view = permissions.find(rule => rule.methods.includes(method)).view ?? []
-		const select = {}
+            const { role } = options?.user ?? { role: 'guest' }
+            const populate = options?.populate ?? []
+            const method = options?.method
 
-		view.filter(v => !v.includes('.')).forEach(key => {
-			select[key] = 1
-		})
+            if (!method) {
+                return {}
+            }
 
-		populate.forEach((e) => {			
-			const populateView = view.filter((v) => v.startsWith(`${e.path}.`))
-			e.select = {}
-			populateView.forEach(key => {
-				e.select[key.split('.')[1]] = 1
-			})
-		})
+            const { permissions } = rules.find(p => p.group === role)
+            const view = permissions.find(rule => rule.methods.includes(method)).view ?? []
+
+            const select = {}
+            view.filter(v => !v.includes('.')).forEach(key => {
+                select[key] = 1
+            })
+
+            populate.forEach((e) => {
+                const populateView = view.filter((v) => v.startsWith(`${e.path}.`))
+                e.select = {}
+                populateView.forEach(key => {
+                    e.select[key.split('.')[1]] = 1
+                })
+            })
 
 
-		const [count, rows] = await Promise.all([
-			this.countDocuments(query),
-			this.find(query, select, cursor)
-				.populate(populate)
-				.lean()
-		])
-		// Start at page 1
-		const page = Math.floor(cursor.skip / cursor.limit) + 1
-		const nextPage = page * cursor.limit === count ? null : page + 1
-		const prevPage = page === 1 ? null : page - 1
-		return {
-			rows,
-			count,
-			nextPage,
-			prevPage,
-			page
-		}
-	}
+            const [count, rows] = await Promise.all([
+                this.countDocuments(query),
+                this.find(query, select, cursor)
+                    .populate(populate)
+                    .lean()
+            ])
+            // Start at page 1
+            const page = Math.floor(cursor.skip / cursor.limit) + 1
+            const nextPage = page * cursor.limit >= count ? null : page + 1
+            const prevPage = page === 1 ? null : page - 1
+            return {
+                rows,
+                count,
+                nextPage,
+                prevPage,
+                page
+            }
+
+        } catch (err) {
+            console.log(err)
+            return {}
+        }
+    }
 }

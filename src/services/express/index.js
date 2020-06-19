@@ -12,11 +12,10 @@ import acl from './acl'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginExpress from '@bugsnag/plugin-express'
 import { doorman } from '~/services/auth/guard'
-import httpContext from 'http-request-context'
 
 Bugsnag.start({
-	apiKey: bugsnag.secret,
-	plugins: [BugsnagPluginExpress]
+    apiKey: bugsnag.secret,
+    plugins: [BugsnagPluginExpress]
 })
 const bugsnagMiddleware = Bugsnag.getPlugin('express')
 // Enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
@@ -26,39 +25,25 @@ const bugsnagMiddleware = Bugsnag.getPlugin('express')
 const limiter = rateLimit(rateLimiter)
 
 export default (apiRoot, routes) => {
-	const app = express()
-	/* istanbul ignore next */
-	app.use(httpContext.middleware({
-		removeAfterClose: true,
-		removeAfterFinish: true
-	  })
-	)
-	app.use((req, res, next) => {
-		httpContext.set('method', req.method)
-		next()
-	})
-	if (env === 'production' || env === 'development') {
-		app.use(bugsnagMiddleware.requestHandler)
-		app.use(helmet())
-		app.use(limiter)
-		app.use(cors())
-		app.use(compression())
-		app.use(morgan('dev'))
-		app.use(bugsnagMiddleware.errorHandler)
-	}
-	app.use(bodyParser.urlencoded({ extended: false }))
-	app.use(bodyParser.json())
-	app.use(doorman)
-	app.use((req, res, next) => {
-		setTimeout(() => {
-			httpContext.set('user', req.user)
-			next()
-		}, 300)
-	})
-	app.use(acl.authorize)
-	app.use(apiRoot, routes)
-	app.use(queryErrorHandler())
-	app.use(bodyErrorHandler())
+    const app = express()
+    /* istanbul ignore next */
 
-	return app
+    if (env === 'production' || env === 'development') {
+        app.use(bugsnagMiddleware.requestHandler)
+        app.use(helmet())
+        app.use(limiter)
+        app.use(cors())
+        app.use(compression())
+        app.use(morgan('dev'))
+        app.use(bugsnagMiddleware.errorHandler)
+    }
+    app.use(bodyParser.urlencoded({ extended: false }))
+    app.use(bodyParser.json())
+    app.use(doorman)
+    app.use(acl.authorize)
+    app.use(apiRoot, routes)
+    app.use(queryErrorHandler())
+    app.use(bodyErrorHandler())
+
+    return app
 }

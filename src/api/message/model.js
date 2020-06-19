@@ -4,26 +4,26 @@ import rules from './acl'
 import userAcl from 'a/user/acl'
 
 const messageSchema = new Schema(
-	{
-		content: {
-			type: String,
-			required: true
-		},
-		author: {
-			type: 'ObjectId',
-			ref: 'User',
-			required: false
-		}
-	},
-	{
-		timestamps: true,
-		toJSON: {
-			virtuals: true,
-			transform: (obj, ret) => {
-				delete ret._id
-			}
-		}
-	}
+    {
+        content: {
+            type: String,
+            required: true,
+        },
+        author: {
+            type: 'ObjectId',
+            ref: 'User',
+            required: false
+        }
+    },
+    {
+        timestamps: true,
+        toJSON: {
+            virtuals: true,
+            transform: (obj, ret) => {
+                delete ret._id
+            }
+        }
+    }
 )
 
 messageSchema.plugin(paginate, { rules, populateRules: { author: userAcl } })

@@ -4,19 +4,20 @@ export paginate from './plugins/paginate'
 export gravatar from './plugins/gravatar'
 export checkOwnership from './plugins/ownership'
 export select from './plugins/select'
+export filter from './plugins/filter'
 
 Object.keys(mongo.options).forEach(key => {
-	mongoose.set(key, mongo.options[key])
+    mongoose.set(key, mongo.options[key])
 })
 
 /* istanbul ignore next */
 mongoose.connection.on('error', err => {
-	console.error('MongoDB connection error: ' + err)
-	process.exit(-1)
+    console.error('MongoDB connection error: ' + err)
+    process.exit(-1)
 })
 
 mongoose.connection.on('open', () => {
-	console.info('MongoDB connected')
+    console.info('MongoDB connected')
 })
 
 export default mongoose

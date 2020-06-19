@@ -1,84 +1,122 @@
 import { success, notFound } from 's/response/'
 import { User } from '.'
+import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
 
-export const index = async ({ querymen }, res, next) => {
-	User.paginate(querymen).then(async (users) => {
-		await success(res)(users)
-	}).catch((error) => {
-		return next(error)
-	})
+const isDocumentOwner = (doc, user) => doc._id.toString() === user._id || user.role === 'admin'
+
+
+export const index = async ({ querymen, user, method }, res, next) => {
+    try {
+        const users = await User.paginate(querymen, { method, user, filter: true })
+
+        res.status(OK).json(users)
+    } catch (error) {
+        return next(error)
+    }
 }
 
-export const show = async ({ params }, res, next) => {
-	User.findById(params.id).select(['name', 'email']).lean().then(async (result) => {
-		await success(res)(result)
-	}).catch((error) => {
-		next(error)
-	})
+export const show = async ({ user: { role }, method, params }, res, next) => {
+    try {
+        const user = await User.findById({ _id: params.id })
+
+        if (!user) {
+            res.status(NOT_FOUND).end()
+            return
+        }
+
+        res.status(OK).json(user.filter({ role, method }))
+    } catch (error) {
+        return next(error)
+    }
 }
 
-export const showMe = async ({ user: { _id } }, res) => {
-	User.findById(_id).lean().then(async (user) => {
-		await success(res)(user)
-	}).catch((error) => {
-		return next(error)
-	})
+export const showMe = async ({ user: { _id, role }, method }, res) => {
+    try {
+        const user = await User.findById(_id )
+
+        if (!user) {
+            res.status(NOT_FOUND).end()
+            return
+        }
+
+        res.status(OK).json(user.filter({ role, method }))
+    } catch (error) {
+        return next(error)
+    }
 }
 
-export const create = async ({ bodymen: { body } }, res, next) => {
-	try {
-		const user = await User.create(body)
-		success(res, 201)(user)
-	} catch (error) {
-		/* istanbul ignore else */
-		if (error.name === 'MongoError' && error.code === 11000) {
-			res.status(409).json({
-				valid: false,
-				param: 'email',
-				message: 'email already registered'
-			})
-		} else {
-			return next(error)
-		}
-	}
+export const create = async ({ bodymen: { body }, method, user }, res, next) => {
+    try {
+        const doc = await User.create(body)
+
+        res.status(CREATED).json(doc.filter({ role: user?.role, method }))
+    } catch (error) {
+        return next(error)
+    }
 }
 
-export const update = async ({ bodymen: { body }, params, user }, res, next) => {
-	User.findOneAndUpdate({ _id: params.id }, body).then(async (result) => {
-		await success(res, 200)(result)
-	}).catch((error) => {
-		return next(error)
-	})
+export const update = async ({ bodymen: { body }, params, user, method }, res, next) => {
+    try {
+        const doc = await User.findById(params.id)
+
+        if (!doc) {
+            res.status(NOT_FOUND).end()
+            return
+        }
+
+        if (!isDocumentOwner(doc, user)) {
+            res.status(FORBIDDEN).end()
+            return
+        }
+
+        await doc.set(body).save()
+
+        res.status(OK).json(doc.filter({ role: user.role, method}))
+    } catch (error) {
+        return next(error)
+    }
 }
 
-export const updatePassword = async (
-	{ bodymen: { body }, params, user },
-	res,
-	next
-) => {
-	try {
-		const result = await User.findById(params.id === 'me' ? user.id : params.id)
-		await notFound(res)(result)
-		const isSelfUpdate = user.id === result.id
-		if (!isSelfUpdate) {
-			res.status(401).json({
-				valid: false,
-				param: 'password',
-				message: 'You can\'t change other user\'s password'
-			})
-		}
-		result => (result ? user.set({ password: body.password }).save() : null)
-		await success(res)(permission.filter(result))
-	} catch (error) {
-		return next(error)
-	}
+export const updatePassword = async ({ bodymen: { body }, params, user }, res, next) => {
+    try {
+        const doc = await User.findById(params.id)
+
+        if (!doc) {
+            res.status(NOT_FOUND).end()
+            return
+        }
+
+        if (!isDocumentOwner(doc, user)) {
+            res.status(FORBIDDEN).end()
+            return
+        }
+
+        await doc.set(body).save()
+
+        res.status(NO_CONTENT).end()
+    } catch (error) {
+        return next(error)
+    }
 }
 
-export const destroy = async ({ params }, res, next) => {
-	try {
-		await User.deleteOne({ _id: id })
-		await success(res, 204)
-	} catch (error) {
-		return next(error)
-	}
+export const destroy = async ({ user, params }, res, next) => {
+    try {
+        const doc = await User.findById(params.id)
+
+        if (!doc) {
+            res.status(NOT_FOUND).end()
+            return
+        }
+
+        if (!isDocumentOwner(doc, user)) {
+            res.status(FORBIDDEN).end()
+            return
+        }
+
+        await User.deleteOne({ _id: params.id})
+
+        res.status(NO_CONTENT).end()
+    } catch (error) {
+        return next(error)
+    }
 }
