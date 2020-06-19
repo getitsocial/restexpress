@@ -1,56 +1,93 @@
 import { merge } from 'lodash'
 import { success, notFound } from 's/response'
 import { Message } from '.'
-import httpContext from 'express-http-context'
+import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
+
+const isDocumentOwner = (doc, user) => doc.author.toString() === user._id || doc.author?._id.toString() === user._id || user.role === 'admin'
+
 // Get all
-export const getAll = async ({ querymen, user }, res, next) => {
+export const index = async ({ querymen, user, method }, res, next) => {
     try {
         const messages = await Message.paginate(querymen, {
-            populate: [{ path: 'author', select: { name: 1, email: 1 } }]
+            populate: [{ path: 'author' }],
+            method,
+            user
         })
-        await success(res)(messages)
+
+        res.status(OK).json(messages)
     } catch (error) {
         return next(error)
     }
 }
 
 // Get One
-export const getOne = async ({ params: { id } }, res, next) => {
+export const show = async ({ params: { id }, method, user }, res, next) => {
     try {
-        const message = await Message.findById(id).lean()
-        await notFound(res)(message)
-        await success(res)(message)
+        const message = await Message.findById(id).populate('author')
+
+        if (!message) {
+            res.status(NOT_FOUND).end()
+            return
+        }
+
+        res.status(OK).json(message.filter({ role: user?.role, method }))
     } catch (error) {
         return next(error)
     }
 }
 
 // Post
-export const create = async ({ bodymen: { body }, permission }, res, next) => {
+export const create = async ({ bodymen: { body }, method, user }, res, next) => {
     try {
         const message = await Message.create(body)
-        await success(res, 201)(message.toJSON())
+
+        res.status(CREATED).json(message.filter({ role: user?.role, method }))
     } catch (error) {
         return next(error)
     }
 }
 
 // Put
-export const update = async ({ bodymen: { body }, user, params, permission }, res, next) => {
-    Message.findOneAndUpdate({ _id: params.id }, body, {
-        new: true
-    }).then(async (result) => {
-        await success(res, 200)(result)
-    }).catch((error) => {
+export const update = async ({ bodymen: { body }, user, method, params: { id } }, res, next) => {
+    try {
+        const message = await Message.findById(id).populate('author')
+
+        if (!message) {
+            res.status(NOT_FOUND).end()
+            return
+        }
+
+        if (!isDocumentOwner(message, user)) {
+            res.status(FORBIDDEN).end()
+            return
+        }
+
+        await message.set(body).save()
+
+        res.status(OK).json(message.filter({ role: user?.role, method }))
+    } catch (error) {
         return next(error)
-    })
+    }
 }
 
 // Delete
-export const destroy = async ({ params: { id } }, res, next) => {
+export const destroy = async ({ params: { id }, user }, res, next) => {
     try {
-        await Message.deleteOne({ _id: id })
-        await success(res, 204)
+        const message = await Message.findById(id)
+
+        if (!message) {
+            res.status(NOT_FOUND).end()
+            return
+        }
+
+        if (!isDocumentOwner(message, user)) {
+            res.status(FORBIDDEN).end()
+            return
+        }
+
+        await message.deleteOne({ _id: id})
+
+        res.status(NO_CONTENT).end()
     } catch (error) {
         return next(error)
     }

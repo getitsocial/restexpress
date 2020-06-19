@@ -2,9 +2,10 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { addAuthor } from 's/request'
-import { create, getAll, getOne, update, destroy } from './controller'
+import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 export Message, { schema } from './model'
+
 const { content } = schema.tree
 const router = new Router()
 
@@ -21,13 +22,8 @@ const router = new Router()
  */
 router.post(
     '/',
-    // doorman(['guest', 'user', 'admin']),
     body({
-        content: {
-            type: String,
-            required: true,
-            minlength: 2
-        }
+        content
     }),
     addAuthor({ required: false, addBody: true }),
     create
@@ -42,7 +38,7 @@ router.post(
  * @apiSuccess {Object[]} messages List of messages.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  */
-router.get('/', query(), getAll)
+router.get('/', query(), index)
 
 /**
  * @api {get} /messages/:id Retrieve message
@@ -53,7 +49,7 @@ router.get('/', query(), getAll)
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Message not found.
  */
-router.get('/:id', getOne)
+router.get('/:id', show)
 
 /**
  * @api {put} /messages/:id Update message

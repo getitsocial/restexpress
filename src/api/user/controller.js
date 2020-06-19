@@ -17,7 +17,7 @@ export const index = async ({ querymen, user, method }, res, next) => {
 
 export const show = async ({ user: { role }, method, params }, res, next) => {
     try {
-        const user = await User.findById({ _id: params.id })
+        const user = await User.findById(params.id)
 
         if (!user) {
             res.status(NOT_FOUND).end()
@@ -71,7 +71,7 @@ export const update = async ({ bodymen: { body }, params, user, method }, res, n
 
         await doc.set(body).save()
 
-        res.status(OK).json(doc.filter({ role: user.role, method}))
+        res.status(OK).json(doc.filter({ role: user.role, method }))
     } catch (error) {
         return next(error)
     }
@@ -99,9 +99,9 @@ export const updatePassword = async ({ bodymen: { body }, params, user }, res, n
     }
 }
 
-export const destroy = async ({ user, params }, res, next) => {
+export const destroy = async ({ user, params: { id } }, res, next) => {
     try {
-        const doc = await User.findById(params.id)
+        const doc = await User.findById(id)
 
         if (!doc) {
             res.status(NOT_FOUND).end()
@@ -113,7 +113,7 @@ export const destroy = async ({ user, params }, res, next) => {
             return
         }
 
-        await User.deleteOne({ _id: params.id})
+        await User.deleteOne({ _id: id})
 
         res.status(NO_CONTENT).end()
     } catch (error) {

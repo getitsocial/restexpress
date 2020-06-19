@@ -20,5 +20,5 @@ Object.keys(permissions).forEach((group) => {
         return { group, permissions: accu.permissions.concat(curr.permissions)}
     })
 })
-console.log(permissions.guest.permissions)
+
 export default Object.values(permissions)
