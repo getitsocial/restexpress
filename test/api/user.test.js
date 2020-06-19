@@ -6,7 +6,7 @@ import { sign, doorman } from 's/auth'
 import { addAuthor } from 's/request'
 import User from 'a/user/model'
 import { apiRoot, masterKey } from '~/config'
-import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
+import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'
 
 let adminUser,
     adminToken,
@@ -124,7 +124,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         const { status, body } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}/5ee5309727c6997fa0339135`)
             .set('Authorization', `Bearer ${defaultToken}`)
-
+        CREATED
         expect(status).toBe(NOT_FOUND)
 
     })
@@ -191,7 +191,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
     })
 
     test(`PUT ${apiRoot}/${apiEndpoint}/:id USER FORBIDDEN (OWNERSHIP)`, async () => {
-        const { status, body, error } = await request(server)
+        const { status, body } = await request(server)
             .put(`${apiRoot}/${apiEndpoint}/${adminUser._id}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({ name: 'Hans' })
@@ -272,7 +272,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         const { status, body } = await request(server)
             .put(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/password`)
             .set('Authorization', `Bearer ${defaultToken}`)
-            .send({ password: 'yeeeeeeha123?!?!?!' })
+            .send({ password: 'yeeeEeeha123?!?!?!' })
 
         expect(status).toBe(NO_CONTENT)
     })
@@ -302,6 +302,103 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
             .send({ password: 'Berta122313?!?!' })
 
         expect(status).toBe(NOT_FOUND)
+    })
+
+})
+describe(`TEST ${apiRoot}/${apiEndpoint} MASTERKEY`,  () => {
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST CREATED`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .send({ email: 'marty2@getit.de', password: 'SoEinGutesPasswortOmg123?!', name: 'Marty' })
+
+        expect(status).toBe(CREATED)
+        const keys = Object.keys(body)
+        expect(keys).toEqual(expect.arrayContaining(['_id', 'verified', 'role', 'name', 'email']))
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST UNAUTHORIZED`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .send({ email: 'marty2@getit.social', password: 'SoEinGutesPasswortOmg123?!', name: 'Marty' })
+
+        expect(status).toBe(UNAUTHORIZED)
+    })
+
+})
+
+describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
+
+    // CREATE
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST BAD_REQUEST PASSWORD`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .send({ email: 'marty2@getit.social', password: 'passwort', name: 'Marty' })
+
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST BAD_REQUEST MAIL`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .send({ email: 'dasistkeinemail', password: 'Passwort123?!!!?', name: 'Marty' })
+
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST UNAUTHORIZED ROLE`, async () => {
+        const { status } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .send({ email: 'marty3@getit.social', password: 'Passwort123?!!!?', name: 'Marty', role: 'admin' })
+
+        expect(status).toBe(UNAUTHORIZED)
+    })
+
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id/password USER BAD_REQUEST`, async () => {
+        const { status, body } = await request(server)
+            .put(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/password`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({ password: 'lmao' })
+
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id/password USER NO_CONTENT`, async () => {
+        const { status, body } = await request(server)
+            .put(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/password`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({ password: 'GUTesPasWort164?!?!?!' })
+
+        expect(status).toBe(NO_CONTENT)
+    })
+
+})
+
+describe(`TEST ${apiRoot}/${apiEndpoint} PASSWORD HASHED`,  () => {
+
+    // CREATE
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST BAD_REQUEST PASSWORD`, async () => {
+        const { status, body: { _id } } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .send({ email: 'marty2@getit.social', password: 'Passwort123?!?1', name: 'Marty' })
+
+        expect(status).toBe(CREATED)
+
+        const { password } = User.findById(_id)
+        expect(password).not.toBe('Passwort123?!?1')
+    })
+
+    // UPDATE
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id/password USER NO_CONTENT`, async () => {
+        const { status, body: { _id } } = await request(server)
+            .put(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/password`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({ password: 'GUTesPasWort164?!?!?!' })
+
+        expect(status).toBe(NO_CONTENT)
+
+        const { password } = User.findById(_id)
+        expect(password).not.toBe('GUTesPasWort164?!?!?!')
     })
 
 })

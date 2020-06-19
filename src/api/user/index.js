@@ -1,9 +1,10 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { masterman } from 's/auth'
+import { masterman, validateUserBeforeCreate } from 's/auth'
 import { schema } from './model'
 export User, { schema } from './model'
+
 import {
     index,
     showMe,
@@ -70,7 +71,14 @@ router.get('/:id', show)
 router.post(
     '/',
     masterman(),
-    body({ email, password, name, picture, role }),
+    validateUserBeforeCreate(),
+    body({
+        email,
+        password,
+        name,
+        picture,
+        role
+    }),
     create
 )
 
@@ -100,7 +108,11 @@ router.put('/:id', body({ name, picture }), update)
  * @apiError 401 Current user access only.
  * @apiError 404 User not found.
  */
-router.put('/:id/password', body({ password }), updatePassword)
+router.put('/:id/password',
+    body({
+        password
+    }),
+    updatePassword)
 
 /**
  * @api {delete} /users/:id Delete user

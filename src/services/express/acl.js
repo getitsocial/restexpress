@@ -7,15 +7,15 @@ import rules from '~/api/acl'
 
 // acl configuration
 acl.config({
-	//specify your own baseUrl
-	baseUrl: 'api',
-	filename: 'acl.js',
-	//path to acl (nacl) file
-	rules: rules,
-	yml: true,
-	// The default role allows you to specify which role users will assume if they are not assigned any
-	defaultRole: 'guest',
-	roleSearchPath: 'user.role'
+    //specify your own baseUrl
+    baseUrl: 'api',
+    filename: 'acl.js',
+    //path to acl (nacl) file
+    rules: rules,
+    yml: true,
+    // The default role allows you to specify which role users will assume if they are not assigned any
+    defaultRole: 'guest',
+    roleSearchPath: 'user.role'
 })
 
 // TODO: acl.checkOwner(rules)

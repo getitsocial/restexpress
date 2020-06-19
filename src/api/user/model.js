@@ -13,16 +13,17 @@ const userSchema = new Schema(
     {
         email: {
             type: String,
-            match: /^\S+@\S+\.\S+$/,
             required: true,
             unique: true,
             trim: true,
-            lowercase: true
+            lowercase: true,
+            // eslint-disable-next-line max-len
+            match: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         },
         password: {
             type: String,
+            match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
             required: true,
-            minlength: 6
         },
         name: {
             type: String,
@@ -85,14 +86,14 @@ userSchema.statics = {
         })
     }
 }
+
 userSchema.post('save', function (error, document, next) {
     next(error?.code === 11000 ? 'Diese E-Mail Adresse existiert bereits.' : error)
 })
+
 userSchema.plugin(gravatar)
 userSchema.plugin(paginate, { rules, populateRules: { user: userAcl } })
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
-// userSchema.plugin(checkOwnership, { rules })
-// userSchema.plugin(select, { rules })
 userSchema.plugin(filter, { rules })
 
 const model = mongoose.model('User', userSchema)
