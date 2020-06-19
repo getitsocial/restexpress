@@ -374,7 +374,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
 
 })
 
-describe(`TEST ${apiRoot}/${apiEndpoint} PASSWORD HASHED`,  () => {
+describe(`TEST ${apiRoot}/${apiEndpoint} PASSWORD HASHED`, () => {
 
     // CREATE
     test(`POST ${apiRoot}/${apiEndpoint}/ GUEST BAD_REQUEST PASSWORD`, async () => {
