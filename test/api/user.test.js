@@ -162,7 +162,6 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
     test(`POST ${apiRoot}/${apiEndpoint}/ ADMIN CREATED`, async () => {
         const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
-            .set('Authorization', `Bearer ${adminToken}`)
             .send({ email: 'marty2@getit.social', password: 'SoEinGutesPasswortOmg123?!', name: 'Marty' })
 
         expect(status).toBe(CREATED)
