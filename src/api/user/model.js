@@ -1,11 +1,12 @@
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
 import { generate } from 'rand-token'
-import { gravatar, paginate, checkOwnership, select, filter } from 's/mongoose'
+import { gravatar, paginate, filter } from 's/mongoose'
 import { hashPassword } from 's/auth'
 import { env } from '~/config'
 import rules from './acl'
 import userAcl from 'a/user/acl'
+import { passwordValidator, emailValidator } from '~/utils/validator'
 
 const roles = ['guest', 'user', 'admin']
 
@@ -18,11 +19,11 @@ const userSchema = new Schema(
             trim: true,
             lowercase: true,
             // eslint-disable-next-line max-len
-            match: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            match: emailValidator
         },
         password: {
             type: String,
-            match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
+            match: passwordValidator,
             required: true,
         },
         name: {
