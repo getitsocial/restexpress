@@ -18,5 +18,4 @@ acl.config({
     roleSearchPath: 'user.role'
 })
 
-// TODO: acl.checkOwner(rules)
 export default acl

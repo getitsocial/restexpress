@@ -41,6 +41,14 @@ beforeEach(async (done) => {
     adminToken = await sign(adminUser)
     defaultToken = await sign(defaultUser)
 
+    const messages = Array(100)
+
+    for (let index = 0; index < messages.length; index += 1) {
+        messages[index] = new Message({ content: 'hello world' })
+    }
+
+    await Message.insertMany(messages)
+
     done()
 })
 
@@ -269,6 +277,103 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
             .send({ content: '' })
 
         expect(status).toBe(BAD_REQUEST)
+    })
+
+})
+
+
+describe(`TEST ${apiRoot}/${apiEndpoint} PAGINATION`,  () => {
+
+    test(`GET ${apiRoot}/${apiEndpoint}/ GUEST OK`, async () => {
+        const { status, body: { rows, count, nextPage, prevPage, page }  } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}`)
+
+        expect(status).toBe(OK)
+
+        expect(rows).not.toBeUndefined()
+        expect(count).not.toBeUndefined()
+        expect(nextPage).not.toBeUndefined()
+        expect(prevPage).not.toBeUndefined()
+        expect(page).not.toBeUndefined()
+
+        expect(Array.isArray(rows)).toBe(true)
+
+        expect(page).toBe(1)
+        expect(prevPage).toBe(null)
+        expect(nextPage).toBe(2)
+
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/ GUEST OK LIMIT=1`, async () => {
+        const { status, body: { rows, count, nextPage, prevPage, page }  } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}?limit=1`)
+
+        expect(status).toBe(OK)
+
+        expect(rows).not.toBeUndefined()
+        expect(count).not.toBeUndefined()
+        expect(nextPage).not.toBeUndefined()
+        expect(prevPage).not.toBeUndefined()
+        expect(page).not.toBeUndefined()
+
+        expect(Array.isArray(rows)).toBe(true)
+
+        expect(page).toBe(1)
+        expect(prevPage).toBe(null)
+        expect(nextPage).toBe(2)
+
+        expect(rows).toHaveLength(1)
+
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/ GUEST OK PAGE=2`, async () => {
+        const { status, body: { rows, count, nextPage, prevPage, page }  } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}?page=2`)
+
+        expect(status).toBe(OK)
+
+        expect(rows).not.toBeUndefined()
+        expect(count).not.toBeUndefined()
+        expect(nextPage).not.toBeUndefined()
+        expect(prevPage).not.toBeUndefined()
+        expect(page).not.toBeUndefined()
+
+        expect(Array.isArray(rows)).toBe(true)
+
+        expect(page).toBe(2)
+        expect(prevPage).toBe(1)
+        expect(nextPage).toBe(3)
+
+        expect(rows).toHaveLength(30)
+
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/ GUEST BAD_REQUEST LIMIT=1000`, async () => {
+        const { status, body: { rows, count, nextPage, prevPage, page }  } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}?limit=1000`)
+
+        expect(status).toBe(BAD_REQUEST)
+
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/ GUEST OK LIMIT=100`, async () => {
+        const { status, body: { rows, count, nextPage, prevPage, page }  } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}?limit=100&page=2`)
+
+        expect(status).toBe(OK)
+
+        expect(rows).not.toBeUndefined()
+        expect(count).not.toBeUndefined()
+        expect(nextPage).not.toBeUndefined()
+        expect(prevPage).not.toBeUndefined()
+        expect(page).not.toBeUndefined()
+
+        expect(Array.isArray(rows)).toBe(true)
+
+        expect(page).toBe(2)
+        expect(prevPage).toBe(1)
+        expect(nextPage).toBe(null)
+
     })
 
 })

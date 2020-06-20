@@ -7,6 +7,7 @@ import httpContext from 'http-request-context'
  * @param {options} options input
  * @returns {object} rows, count, nextPage, PrevPage, page
  */
+// TODO: user select
 export default function paginate(schema, { rules }) {
     schema.statics.paginate = async function({ query, cursor }, options) {
         try {
