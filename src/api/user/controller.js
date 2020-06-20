@@ -1,4 +1,3 @@
-import { success, notFound } from 's/response/'
 import { User } from '.'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT } from 'http-status-codes'
 

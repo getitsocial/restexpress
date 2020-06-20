@@ -17,19 +17,19 @@ const router = new Router()
  * @apiError 401 Master access only or invalid credentials.
  */
 router.post(
-	'',
-	body({
-		email: {
-			type: String,
-			required: true
-		},
-		password: {
-			type: String,
-			required: true
-		}
-	}),
-	masterman(),
-	authenticate
+    '',
+    body({
+        email: {
+            type: String,
+            required: true
+        },
+        password: {
+            type: String,
+            required: true
+        }
+    }),
+    masterman(),
+    authenticate
 )
 
 /**
@@ -49,6 +49,6 @@ router.post('/logout', logout)
  * @apiSuccess (Success 201) {Object} user Current user's data.
  * @apiError 401 Invalid credentials.
  */
-router.post('/:provider', providerAuthenticate)
+// router.post('/:provider', providerAuthenticate)
 
 export default router

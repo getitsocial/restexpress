@@ -1,38 +1,38 @@
-import { success, notFound } from 's/response'
-import model from '~/api/user/model'
+import User from '~/api/user/model'
 import { sign, decodeJWT, destroy, comparePassword, providerAuth } from 's/auth'
-
-/**
- * @throws {BadRequestError} 400 Error - invalid email or password
- */
-const errorHandler = (res, next) => next()
+import { OK, NOT_FOUND, UNAUTHORIZED, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
+import { extractToken } from 's/auth/utils'
 
 const signHandler = async (user, res) => {
     // Sign Token
     const token = await sign(user)
     const { _id, role } = await decodeJWT(token)
 
-    // Send response
-    success(res)({ _id, role, token })
+    res.status(OK).json({ _id, role, token})
 }
 
 export const authenticate = async ({ body: { email, password } }, res, next) => {
     // Pass value
     try {
         // Find user
-        const user = await model.findOne({ email })
-        await notFound(res)(user)
+        const user = await User.findOne({ email })
 
-        if (!user.verified)
-        {res
-            .status(401)
-            .json({ valid: false, message: 'You E-mail is not verified' })
-            .end()}
+        if (!user) {
+            // We do not want to tell the user that the email doesnt exist...
+            res.status(UNAUTHORIZED).json({ valid: false, message: 'Wrong password or E-mail' }).end()
+            return
+        }
+
+        if (!user.verified) {
+            res.status(UNAUTHORIZED).json({ valid: false, message: 'Your E-mail is not verified' }).end()
+            return
+        }
 
         // Compare password
         const comparedPassword = comparePassword(password, user.password)
         if (!comparedPassword) {
-            return errorHandler(res, next)
+            res.status(UNAUTHORIZED).json({ valid: false, message: 'Wrong password or E-mail' }).end()
+            return
         }
 
         // Sign in user
@@ -50,7 +50,7 @@ export const providerAuthenticate = async ({ body, params }, res, next) => {
     try {
         // Get user from external provider
         const providerUser = await providerAuth[provider](token)
-        const user = await model.createFromService(providerUser)
+        const user = await User.createFromService(providerUser)
 
         // Sign in user
         await signHandler(user, res)
@@ -61,9 +61,13 @@ export const providerAuthenticate = async ({ body, params }, res, next) => {
 
 export const logout = async (req, res, next) => {
     try {
+        if (extractToken(req) == null) {
+            res.status(BAD_REQUEST).end()
+            return
+        }
         await destroy(req)
-        res.send('success')
+        res.status(NO_CONTENT).end()
     } catch (error) {
-        next()
+        next(error)
     }
 }

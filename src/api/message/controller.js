@@ -1,8 +1,8 @@
 import { merge } from 'lodash'
-import { success, notFound } from 's/response'
 import { Message } from '.'
 import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
 
+// eslint-disable-next-line max-len
 const isDocumentOwner = (doc, user) => doc.author.toString() === user._id || doc.author?._id.toString() === user._id || user.role === 'admin'
 
 // Get all
