@@ -86,11 +86,11 @@ userSchema.statics = {
         })
     }
 }
-
+/*
 userSchema.post('save', function (error, document, next) {
     next(error?.code === 11000 ? 'Diese E-Mail Adresse existiert bereits.' : error)
 })
-
+*/
 userSchema.plugin(gravatar)
 userSchema.plugin(paginate, { rules, populateRules: { user: userAcl } })
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })

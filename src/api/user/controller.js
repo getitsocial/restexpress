@@ -1,9 +1,9 @@
 import { success, notFound } from 's/response/'
 import { User } from '.'
-import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
+import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT } from 'http-status-codes'
 
 const isDocumentOwner = (doc, user) => doc._id.toString() === user._id || user.role === 'admin'
-
+const isConflict = error => error.code === 11000
 
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
@@ -48,9 +48,11 @@ export const showMe = async ({ user: { _id, role }, method }, res) => {
 export const create = async ({ bodymen: { body }, method, user }, res, next) => {
     try {
         const doc = await User.create(body)
-
         res.status(CREATED).json(doc.filter({ role: user?.role, method }))
     } catch (error) {
+        if (isConflict(error)) {
+            res.status(CONFLICT).end()
+        }
         return next(error)
     }
 }

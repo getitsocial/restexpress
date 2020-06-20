@@ -6,7 +6,7 @@ import { sign, doorman } from 's/auth'
 import { addAuthor } from 's/request'
 import User from 'a/user/model'
 import { apiRoot, masterKey } from '~/config'
-import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'
+import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST, CONFLICT } from 'http-status-codes'
 
 let adminUser,
     adminToken,
@@ -38,7 +38,6 @@ beforeEach(async (done) => {
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
-
 
     // INDEX
     test(`GET ${apiRoot}/${apiEndpoint} USER FORBIDDEN`, async () => {
@@ -370,6 +369,14 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
             .send({ password: 'GUTesPasWort164?!?!?!' })
 
         expect(status).toBe(NO_CONTENT)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST CONFLICT`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .send({ email: 'marty@getit.social', password: 'PAassworrrt?!12', name: 'Marty' })
+
+        expect(status).toBe(CONFLICT)
     })
 
 })
