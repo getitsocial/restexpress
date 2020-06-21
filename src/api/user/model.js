@@ -1,12 +1,13 @@
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
 import { generate } from 'rand-token'
-import { gravatar, paginate, filter } from 's/mongoose'
+import { gravatar, paginate, filter, ownership } from 's/mongoose'
 import { hashPassword } from 's/auth'
 import { env } from '~/config'
 import rules from './acl'
 import userAcl from 'a/user/acl'
 import { passwordValidator, emailValidator } from '~/utils/validator'
+import randtoken from 'rand-token'
 
 const roles = ['guest', 'user', 'admin']
 
@@ -66,32 +67,33 @@ userSchema.pre('save', async function(next) {
 
 userSchema.statics = {
     roles,
-
-    createFromService({ service, id, email, name, picture }) {
-        return this.findOne({
-            $or: [{ [`services.${service}`]: id }, { email }]
-        }).then(user => {
-            if (user) {
-                user.services[service] = id
-                user.name = name
-                user.picture = picture
-                const password = generate(16)
-                return this.create({
-                    services: { [service]: id },
-                    picture,
-                    email,
-                    password,
-                    name
-                })
-            }
+    async createFromService({ service, id, email, name, picture }) {
+        const user = await this.findOne({
+            $or: [{ [`services.${service}`]: id }, { email }],
         })
-    }
+        if (user) {
+            user.services[service] = id
+            user.name = name
+            user.picture = picture
+            user.verified = true
+            return user.save()
+        } else {
+            const password = randtoken.generate(32, 'aA1!&bB2§/cC3$(dD4%)')
+            const newUser = this.create({
+                services: { [service]: id },
+                email,
+                password,
+                name,
+                picture,
+                verified: true,
+            })
+
+            return newUser
+        }
+    },
 }
-/*
-userSchema.post('save', function (error, document, next) {
-    next(error?.code === 11000 ? 'Diese E-Mail Adresse existiert bereits.' : error)
-})
-*/
+
+userSchema.plugin(ownership, { custom: (doc, user) =>  user.role === 'admin' || doc._id.toString() === user._id })
 userSchema.plugin(gravatar)
 userSchema.plugin(paginate, { rules, populateRules: { user: userAcl } })
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })

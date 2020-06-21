@@ -2,9 +2,6 @@ import { merge } from 'lodash'
 import { Message } from '.'
 import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
 
-// eslint-disable-next-line max-len
-const isDocumentOwner = (doc, user) => doc.author.toString() === user._id || doc.author?._id.toString() === user._id || user.role === 'admin'
-
 // Get all
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
@@ -57,7 +54,7 @@ export const update = async ({ bodymen: { body }, user, method, params: { id } }
             return
         }
 
-        if (!isDocumentOwner(message, user)) {
+        if (!Message.isOwner(message, user)) {
             res.status(FORBIDDEN).end()
             return
         }
@@ -80,7 +77,7 @@ export const destroy = async ({ params: { id }, user }, res, next) => {
             return
         }
 
-        if (!isDocumentOwner(message, user)) {
+        if (!Message.isOwner(message, user)) {
             res.status(FORBIDDEN).end()
             return
         }

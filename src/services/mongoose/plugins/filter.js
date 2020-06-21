@@ -1,4 +1,3 @@
-import httpContext from 'http-request-context'
 
 export default function select(schema, { rules }) {
     schema.methods.filter = function({ role = 'guest', method }) {

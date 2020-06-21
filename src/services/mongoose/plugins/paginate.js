@@ -1,5 +1,3 @@
-import httpContext from 'http-request-context'
-
 // eslint-disable-next-line no-unused-vars
 /**
  * This adds the pagination function

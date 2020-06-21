@@ -1,7 +1,6 @@
 import { User } from '.'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT } from 'http-status-codes'
 
-const isDocumentOwner = (doc, user) => doc._id.toString() === user._id || user.role === 'admin'
 const isConflict = error => error.code === 11000
 
 export const index = async ({ querymen, user, method }, res, next) => {
@@ -65,7 +64,7 @@ export const update = async ({ bodymen: { body }, params, user, method }, res, n
             return
         }
 
-        if (!isDocumentOwner(doc, user)) {
+        if (!User.isOwner(doc, user)) {
             res.status(FORBIDDEN).end()
             return
         }
@@ -87,7 +86,7 @@ export const updatePassword = async ({ bodymen: { body }, params, user }, res, n
             return
         }
 
-        if (!isDocumentOwner(doc, user)) {
+        if (!User.isOwner(doc, user)) {
             res.status(FORBIDDEN).end()
             return
         }
@@ -109,7 +108,7 @@ export const destroy = async ({ user, params: { id } }, res, next) => {
             return
         }
 
-        if (!isDocumentOwner(doc, user)) {
+        if (!User.isOwner(doc, user)) {
             res.status(FORBIDDEN).end()
             return
         }
