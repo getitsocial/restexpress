@@ -271,16 +271,15 @@ POST /users
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| access_token | `String` | <p>Master access_token.</p> |
-| email | `String` | <p>User's email.</p> |
-| password | `String` | <p>User's password.</p>_Size range: 6.._<br> |
-| name | `String` | **optional** <p>User's name.</p> |
-| picture | `String` | **optional** <p>User's picture.</p> |
-| role | `String` | **optional** <p>User's role.</p>_Default value: user_<br>_Allowed values: user,admin_ |
+| master | `String` | <p>Master access token.</p> |
+| email | `String` |  |
+| password | `String` | _Size range: 6.._<br> |
+| name | `String` | **optional** <p>name</p> |
+| picture | `String` | **optional** <p>picture</p> |
 
 ### Success response
 
-#### Success response - `Sucess 201`
+#### Success response - `Success 201`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
@@ -294,6 +293,7 @@ POST /users
 |----------|------------|---------------------------------------|
 | 400 | `Object` | <p>Some parameters may contain invalid values.</p> |
 | 401 |  | <p>Master access only.</p> |
+| 403 |  | <p>Guest access only</p> |
 | 409 |  | <p>Email already registered.</p> |
 
 ## <a name='Delete-user'></a> Delete user
@@ -323,7 +323,7 @@ DELETE /users/:id
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| 401 |  | <p>Admin access only.</p> |
+| 403 |  | <p>Admin or user access only.</p> |
 | 404 |  | <p>User not found.</p> |
 
 ## <a name='Retrieve-current-user'></a> Retrieve current user
@@ -346,6 +346,14 @@ GET /users/me
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | user | `Object` | <p>User's data.</p> |
+
+### Error response
+
+#### Error response - `Error 4xx`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| 403 | `Object` | <p>user or admin access only</p> |
 
 ## <a name='Retrieve-user'></a> Retrieve user
 [Back to top](#top)
@@ -382,11 +390,6 @@ GET /users
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | access_token | `String` | <p>User access_token.</p> |
-| q | `String` | **optional** <p>Query to search.</p> |
-| page | `Number` | **optional** <p>Page number.</p>_Default value: 1_<br>_Size range: 1..30_<br> |
-| limit | `Number` | **optional** <p>Amount of returned items.</p>_Default value: 30_<br>_Size range: 1..100_<br> |
-| sort | `String[]` | **optional** <p>Order of returned items.</p>_Default value: -createdAt_<br> |
-| fields | `String[]` | **optional** <p>Fields to be returned.</p> |
 
 ### Success response
 
@@ -403,7 +406,7 @@ GET /users
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | 400 | `Object` | <p>Some parameters may contain invalid values.</p> |
-| 401 |  | <p>user access only.</p> |
+| 403 | `Object` | <p>admin access only.</p> |
 
 ## <a name='Update-password'></a> Update password
 [Back to top](#top)
@@ -412,17 +415,11 @@ GET /users
 PUT /users/:id/password
 ```
 
-### Headers - `Header`
-
-| Name    | Type      | Description                          |
-|---------|-----------|--------------------------------------|
-| Authorization | `String` | <p>Basic authorization with email and password.</p> |
-
 ### Parameters - `Parameter`
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| password | `String` | <p>User's new password.</p>_Size range: 6.._<br> |
+| new | `String` | <p>password.</p> |
 
 ### Success response
 
@@ -430,7 +427,7 @@ PUT /users/:id/password
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| user | `Object` | <p>User's data.</p> |
+| user | `Object` | <p>data.</p> |
 
 ### Error response
 
@@ -439,7 +436,7 @@ PUT /users/:id/password
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | 400 | `Object` | <p>Some parameters may contain invalid values.</p> |
-| 401 |  | <p>Current user access only.</p> |
+| 403 |  | <p>Current user access only.</p> |
 | 404 |  | <p>User not found.</p> |
 
 ## <a name='Update-user'></a> Update user
@@ -463,7 +460,7 @@ PUT /users/:id
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
-| user | `Object` | <p>User's data.</p> |
+| user | `Object` | <p>data.</p> |
 
 ### Error response
 
@@ -472,5 +469,5 @@ PUT /users/:id
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | 400 | `Object` | <p>Some parameters may contain invalid values.</p> |
-| 401 |  | <p>Current user or admin access only.</p> |
+| 403 |  | <p>Current user or admin access only.</p> |
 | 404 |  | <p>User not found.</p> |
