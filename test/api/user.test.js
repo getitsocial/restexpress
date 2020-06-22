@@ -409,3 +409,64 @@ describe(`TEST ${apiRoot}/${apiEndpoint} PASSWORD HASHED`, () => {
     })
 
 })
+
+describe('TEST USER GRAVATAR', () => {
+
+    test('Create user without picture', async () => {
+        const user = await User.create({
+            name: 'fritz',
+            email: 'fritz@getit.social',
+            password: 'SuperPasswort123?!',
+            role: 'admin'
+        })
+        expect(user.picture).not.toBeUndefined()
+    })
+
+    test('Create user with picture', async () => {
+        const user = await User.create({
+            name: 'fritz',
+            email: 'fritz@getit.social',
+            password: 'SuperPasswort123?!',
+            role: 'admin',
+            picture: 'https://www.getit.social'
+        })
+
+        expect(user.picture).toBe('https://www.getit.social')
+    })
+
+    test('Update user email with picture', async () => {
+        const user = await User.create({
+            name: 'fritz',
+            email: 'fritz@getit.social',
+            password: 'SuperPasswort123?!',
+            role: 'admin',
+            picture: 'https://www.getit.social'
+        })
+
+        expect(user.picture).toBe('https://www.getit.social')
+
+        await user.set({ email: 'gerda@getit.social'}).save()
+
+        // picture should not get updated
+        expect(user.picture).toBe('https://www.getit.social')
+
+    })
+
+    test('Update user email with gravatar', async () => {
+        const user = await User.create({
+            name: 'fritz',
+            email: 'fritz@getit.social',
+            password: 'SuperPasswort123?!',
+            role: 'admin',
+        })
+        const picture = user.picture
+        expect(picture).not.toBeUndefined()
+
+        await user.set({ email: 'gerda@getit.social'}).save()
+
+        // picture should get updated
+        expect(user.picture).toContain('https://gravatar.com')
+
+    })
+
+})
