@@ -49,6 +49,15 @@ router.post('/logout', logout)
  * @apiSuccess (Success 201) {Object} user Current user's data.
  * @apiError 401 Invalid credentials.
  */
-// router.post('/:provider', providerAuthenticate)
+router.post(
+    '/:provider',
+    body({
+        token: {
+            type: String,
+            required: true
+        }
+    }),
+    providerAuthenticate
+)
 
 export default router

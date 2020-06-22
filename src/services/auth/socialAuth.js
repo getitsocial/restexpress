@@ -29,7 +29,7 @@ export const providerAuth = {
         })
         return {
             service: 'google',
-            picture: picture,
+            picture,
             id,
             name,
             email

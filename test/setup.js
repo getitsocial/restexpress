@@ -25,7 +25,7 @@ global.parseFloat = parseFloat
 let mongoServer
 
 beforeAll(async () => {
-    jest.setTimeout(30000)
+    jest.setTimeout(45000)
 
     mongoServer = new MongodbMemoryServer()
     const mongoUri = await mongoServer.getConnectionString()
@@ -38,7 +38,7 @@ beforeAll(async () => {
             console.error(err)
         }
     })
-})
+}, 45000)
 
 afterAll(async (done) => {
     mongoose.connection.close()
