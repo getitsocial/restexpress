@@ -5,6 +5,12 @@
 	"main": "lib/server",
 	"author": "Tayfun Guelcan",
 	"license": "MIT",
+	"apidoc": {
+		"name": "restexpress",
+		"description": "restexpress api Documentation",
+		"title": "restexpress api Documentation",
+		"url": "/api"
+	  },
 	"scripts": {
 		"dev": "nodemon --exec babel-node src/server",
 		"lint": "eslint src",
@@ -14,7 +20,8 @@
 		"start": "node .",
 		"serve": "node dist/server",
 		"test": "jest --maxWorkers=1 --detectOpenHandles",
-		"test:coverage": "yarn run test --coverage"
+		"test:coverage": "yarn run test --coverage",
+		"docs": "apidoc -i src -o docs && apidoc-markdown -p docs -o API.md"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.10.1",
@@ -33,6 +40,9 @@
 	"dependencies": {
 		"@bugsnag/js": "^7.1.1",
 		"@bugsnag/plugin-express": "^7.1.1",
+		"@sendgrid/mail": "^7.2.0",
+		"apidoc": "^0.23.0",
+		"apidoc-markdown": "^5.1.4",
 		"argon2": "^0.26.2",
 		"babel-eslint": "^10.1.0",
 		"babel-jest": "^26.0.1",
