@@ -60,7 +60,7 @@ userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) {
         return next()
     }
-    /* istanbul ignore next */
+
     this.password = await hashPassword(this.password)
     return next()
 })

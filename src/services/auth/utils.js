@@ -1,4 +1,4 @@
-import { hash, compareSync } from 'bcryptjs'
+import { hash, verify } from 'argon2'
 /**
  * Extract the given token from Header, Query or Body
  * @param {object} req - Incoming Request
@@ -54,11 +54,11 @@ export const validateUserBeforeCreate = () => ({ body }, res, next) =>
  * @param {string} password
  * @returns {Promise} The hashed password.
  */
-export const hashPassword = async password => await hash(password, 9)
+export const hashPassword = async password => await hash(password)
 
 /**
  * Compare the bcrypt password
  * @param {string} password
  * @returns {Promise} The boolean compared return
  */
-export const comparePassword = (password, comparePassword) => compareSync(password, comparePassword)
+export const comparePassword = async (password, comparePassword) => await verify(password, comparePassword)

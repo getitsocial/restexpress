@@ -29,7 +29,7 @@ export const authenticate = async ({ body: { email, password } }, res, next) => 
         }
 
         // Compare password
-        const comparedPassword = comparePassword(password, user.password)
+        const comparedPassword = await comparePassword(user.password, password)
         if (!comparedPassword) {
             res.status(UNAUTHORIZED).json({ valid: false, message: 'Wrong password or E-mail' }).end()
             return
