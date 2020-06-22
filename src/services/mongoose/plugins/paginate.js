@@ -5,11 +5,13 @@
  * @param {options} options input
  * @returns {object} rows, count, nextPage, PrevPage, page
  */
-// TODO: user select
+
+// TODO: user select. Right now only +fields work
 export default function paginate(schema, { rules }) {
-    schema.statics.paginate = async function({ query, cursor }, options) {
+    schema.statics.paginate = async function({ query, cursor, select: userSelect }, options) {
         try {
 
+            const wantedFields = Object.keys(userSelect).filter(field => userSelect[field] === 1)
             const { role } = options?.user ?? { role: 'guest' }
             const populate = options?.populate ?? []
             const method = options?.method
@@ -22,7 +24,9 @@ export default function paginate(schema, { rules }) {
             const view = permissions.find(rule => rule.methods.includes(method)).view ?? []
 
             const select = {}
-            view.filter(v => !v.includes('.')).forEach(key => {
+            // create intersection between view and wantedFields,
+            // then exclude the nested fields and select those that are left
+            view.filter(v => wantedFields.includes(v)).filter(v => !v.includes('.')).forEach(key => {
                 select[key] = 1
             })
 
@@ -41,7 +45,7 @@ export default function paginate(schema, { rules }) {
                     .populate(populate)
                     .lean()
             ])
-            // Start at page 1
+
             const page = Math.floor(cursor.skip / cursor.limit) + 1
             const nextPage = page * cursor.limit >= count ? null : page + 1
             const prevPage = page === 1 ? null : page - 1
