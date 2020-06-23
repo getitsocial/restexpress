@@ -1,7 +1,8 @@
 import { User } from '.'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT } from 'http-status-codes'
-
+import { sendVerificationMail } from 's/sendgrid'
 const isConflict = error => error.code === 11000
+import Verification from 'a/verification/model'
 
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
@@ -46,6 +47,11 @@ export const showMe = async ({ user: { _id, role }, method }, res) => {
 export const create = async ({ bodymen: { body }, method, user }, res, next) => {
     try {
         const doc = await User.create(body)
+
+        const { token } = await Verification.create({ user: doc._id })
+
+        await sendVerificationMail({ to: body.email, name: body.name, token })
+
         res.status(CREATED).json(doc.filter({ role: user?.role, method }))
     } catch (error) {
         if (isConflict(error)) {

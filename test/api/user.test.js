@@ -2,7 +2,7 @@ import 'dotenv/config'
 import request from 'supertest'
 import server from '~/server'
 import { Router } from 'express'
-import { sign, doorman } from 's/auth'
+import { sign } from 's/auth'
 import { addAuthor } from 's/request'
 import User from 'a/user/model'
 import { apiRoot, masterKey } from '~/config'
@@ -123,7 +123,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         const { status, body } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}/5ee5309727c6997fa0339135`)
             .set('Authorization', `Bearer ${defaultToken}`)
-        CREATED
+
         expect(status).toBe(NOT_FOUND)
 
     })
@@ -141,9 +141,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
     // CREATE
     test(`POST ${apiRoot}/${apiEndpoint}/ GUEST CREATED`, async () => {
-        const { status, body } = await request(server)
+        const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
             .send({ email: 'marty2@getit.social', password: 'SoEinGutesPasswortOmg123?!', name: 'Marty' })
+
+        console.log(error)
+        const { verified } = await User.findOne({ email: 'marty2@getit.social' })
+        expect(verified).toBe(false)
 
         expect(status).toBe(CREATED)
         const keys = Object.keys(body)

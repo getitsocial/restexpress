@@ -23,6 +23,14 @@ beforeEach(async () => {
         verified: true
     })
 
+    const unverifiedUser = await User.create({
+        name: 'Marty',
+        email: 'unverified@getit.social',
+        password: 'Passwort213!!!',
+        role: 'user',
+        verified: false
+    })
+
     const defaultUser = await User.create({
         name: 'Marty',
         email: 'marty0@getit.social',
@@ -74,6 +82,14 @@ describe('Auth Test:', () => {
         const { statusCode } = await request(server)
             .post(`${apiRoot}/auth?master=${masterKey}`)
             .send({ email: 'marty@getit.social', password: 'Max123!!?!' })
+
+        expect(statusCode).toBe(UNAUTHORIZED)
+    })
+
+    test(`POST ${apiRoot}/auth UNAUTHORIZED - unverified email`, async () => {
+        const { statusCode } = await request(server)
+            .post(`${apiRoot}/auth?master=${masterKey}`)
+            .send({ email: 'unverified@getit.social', password: 'Passwort213!!!' })
 
         expect(statusCode).toBe(UNAUTHORIZED)
     })

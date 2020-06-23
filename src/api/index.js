@@ -4,6 +4,7 @@ import { doorman } from '~/services/auth/guard'
 import auth from './auth'
 import user from './user'
 import message from './message'
+import verification from './verification'
 
 const router = new Router()
 
@@ -32,6 +33,7 @@ const router = new Router()
  */
 
 router.use('/auth', auth)
+router.use('/verification', verification)
 router.use('/users', user)
 router.use('/messages', message)
 
