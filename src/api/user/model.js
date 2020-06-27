@@ -19,7 +19,6 @@ const userSchema = new Schema(
             unique: true,
             trim: true,
             lowercase: true,
-            // eslint-disable-next-line max-len
             match: emailValidator
         },
         password: {

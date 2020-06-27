@@ -3,6 +3,7 @@ import messageAcl from './message/acl'
 import authAcl from './auth/acl'
 import userAcl from './user/acl'
 import verificationAcl from './verification/acl'
+import passwordResetAcl from './password-reset/acl'
 
 const defaultPermissions = []
 
@@ -12,7 +13,8 @@ const permissions = {
         ...messageAcl,
         ...authAcl,
         ...userAcl,
-        ...verificationAcl
+        ...verificationAcl,
+        ...passwordResetAcl
     ],'group')
 }
 

@@ -18,7 +18,7 @@ const permissions = [
                 methods: ['PUT', 'DELETE', 'GET'],
                 checkOwner: true,
                 action: 'allow',
-                view: ['_id', 'verified', 'role', 'name', 'email']
+                view: ['_id', 'verified', 'role', 'name', 'email', 'picture']
             }
         ]
     },
@@ -29,7 +29,7 @@ const permissions = [
                 resource: 'users/*',
                 methods: ['POST', 'DELETE', 'PUT', 'GET'],
                 action: 'allow',
-                view: ['_id', 'verified', 'role', 'name', 'email']
+                view: ['_id', 'verified', 'role', 'name', 'email', 'picture']
             }
         ]
     }

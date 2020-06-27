@@ -113,11 +113,13 @@ router.put('/:id', body({ name, picture }), update)
  * @apiError 403 Current user access only.
  * @apiError 404 User not found.
  */
-router.put('/:id/password',
+router.put(
+    '/:id/password',
     body({
         password
     }),
-    updatePassword)
+    updatePassword
+)
 
 /**
  * @api {delete} /users/:id Delete user

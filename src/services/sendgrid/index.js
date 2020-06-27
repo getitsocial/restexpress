@@ -16,7 +16,10 @@ export const sendDynamicMail = ({ from = defaultEmail, to, templateId, dynamic_t
 }
 
 // eslint-disable-next-line max-len
-const verificationLink = token => ['development', 'test'].includes(env) ? `http://${ip}:${port}${apiRoot}/verification/${token}` : `${process.env.APP_URL}/account/verify/${token}`
+const passwordResetLink = token => env !== 'production' ? `http://${ip}:${port}${apiRoot}/password-reset/${token}` : `${process.env.APP_URL}/account/password-reset/${token}`
+
+// eslint-disable-next-line max-len
+const verificationLink = token => env !== 'production' ? `http://${ip}:${port}${apiRoot}/verification/${token}` : `${process.env.APP_URL}/account/verify/${token}`
 
 export const sendVerificationMail = ({ to, name, token }) => {
     return sendgridMail.send({
@@ -29,5 +32,17 @@ export const sendVerificationMail = ({ to, name, token }) => {
         },
         mail_settings
     })
+}
 
+export const sendPasswordResetMail = ({ to, name, token }) => {
+    return sendgridMail.send({
+        to,
+        from: defaultEmail,
+        templateId: emailTemplates.forgot,
+        dynamic_template_data: {
+            username: name,
+            link: passwordResetLink(token)
+        },
+        mail_settings
+    })
 }
