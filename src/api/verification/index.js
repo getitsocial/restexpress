@@ -10,12 +10,11 @@ const router = new Router()
 const { token } = schema.tree
 
 /**
- * @api {get} /verification/:id Verify Email
- * @apiName VerifyEmail
- * @apiGroup User
- * @apiPermission guest
- * @apiSuccess (Success 204) 204 No Content.
- * @apiError 404 token not found.
+ * Verify a user
+ *
+ * @name User Verification
+ * @route {GET} /api/verification/:token
+ * @routeparam {String} :token is the unique identifier for the verification flow
  */
 router.get('/:token', verify)
 
