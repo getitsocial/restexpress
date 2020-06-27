@@ -68,7 +68,7 @@ export const update = async ({ bodymen: { body: { password }}, params: { token }
         }
 
         await user.set({ password }).save()
-        await PasswordReset.remove({ user })
+        await PasswordReset.deleteOne({ user })
 
         res.status(NO_CONTENT).end()
 
