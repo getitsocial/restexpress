@@ -10,7 +10,47 @@ import { passwordValidator, emailValidator } from '~/utils/validator'
 import randtoken from 'rand-token'
 
 const roles = ['guest', 'user', 'admin']
-
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      User:
+ *        type: object
+ *        required:
+ *          - password
+ *          - email
+ *        properties:
+ *          email:
+ *            type: string
+ *            format: email
+ *            description: Email for the user, needs to be unique.
+ *          password:
+ *            type: string
+ *          name:
+ *            type: string
+ *          services:
+ *            type: object
+ *            properties:
+ *              facebook:
+ *                type: string
+ *              github:
+ *                type: string
+ *              google:
+ *                type: string
+ *          role:
+ *            type: string
+ *            default: 'user'
+ *          picture:
+ *            type: string
+ *            format: uri
+ *          verified:
+ *            type: boolean
+ *            default: false
+ *        example:
+ *           name: Alexander
+ *           email: fake@email.com
+ *           password: VerySecurePassword123?!!!!
+ */
 const userSchema = new Schema(
     {
         email: {

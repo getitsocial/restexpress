@@ -11,7 +11,9 @@ import { env, rateLimiter, bugsnag } from '~/config'
 import acl from './acl'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginExpress from '@bugsnag/plugin-express'
-import { doorman } from '~/services/auth/guard'
+import { doorman } from 's/auth/guard'
+import swagger from 's/swagger'
+
 let bugsnagMiddleware
 if (env !== 'test') {
     Bugsnag.start({
@@ -39,6 +41,9 @@ export default (apiRoot, routes) => {
         app.use(compression())
         app.use(morgan('dev'))
         app.use(bugsnagMiddleware.errorHandler)
+    }
+    if (env === 'development') {
+        app.use(swagger)
     }
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(bodyParser.json())

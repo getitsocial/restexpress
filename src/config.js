@@ -39,6 +39,32 @@ const config = {
                 forgot: 'd-ac2e091839ab4112b1be2ff7d9d2d6d3'
             },
             defaultEmail: 'no-reply@getit.market'
+        },
+        swagger: {
+            swaggerDefinition: {
+                openapi: '3.0.0',
+                info: {
+                    title: 'RESTexpress',
+                    version: '1.0.0',
+                    description:
+                    'Restexpress is a highly customizable REST backend and API generator',
+                    license: {
+                        name: 'MIT',
+                        url: 'https://github.com/tguelcan/restexpress/blob/master/LICENSE'
+                    },
+                    contact: {
+                        name: 'get-it team',
+                        url: 'https://getit.social',
+                        email: 'randy.kappa@gmail.com'
+                    }
+                },
+                servers: [
+                    {
+                        url: 'http://localhost:8080/docs'
+                    }
+                ]
+            },
+            apis: ['src/**/*.js']
         }
     },
     test: {

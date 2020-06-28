@@ -43,4 +43,13 @@ export const destroy = async req => {
 // Main middleware validator
 export const doorman = eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } })
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     masterKey:
+ *       type: apiKey
+ *       in: query
+         name: master
+ */
 export const masterman = () => (req, res, next) =>  masterKey === extractMaster(req) ? next() : res.status(401).end()

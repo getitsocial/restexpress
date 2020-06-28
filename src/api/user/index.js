@@ -56,20 +56,34 @@ router.get('/me', showMe)
 router.get('/:id', show)
 
 /**
- * @api {post} /users Create user
- * @apiName CreateUser
- * @apiGroup User
- * @apiPermission guest
- * @apiParam {String} master Master access token.
- * @apiParam {String} email
- * @apiParam {String{6..}} password
- * @apiParam {String} [name] name
- * @apiParam {String} [picture] picture
- * @apiSuccess (Success 201) {Object} user User's data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 401 Master access only.
- * @apiError 403 Guest access only
- * @apiError 409 Email already registered.
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
+
+/**
+ * @swagger
+ * path:
+ *  api/users/:
+ *    post:
+ *      summary: Create a new user
+ *      tags: [Users]
+ *      security:
+ *        - masterKey
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *      responses:
+ *        "201":
+ *          description: A user schema
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/User'
  */
 router.post(
     '/',
