@@ -14,24 +14,9 @@ export const index = async ({ querymen, user, method }, res, next) => {
     }
 }
 
-export const show = async ({ user: { role }, method, params }, res, next) => {
+export const show = async ({ user: { _id, role }, method, params: { id } }, res) => {
     try {
-        const user = await User.findById(params.id)
-
-        if (!user) {
-            res.status(NOT_FOUND).end()
-            return
-        }
-
-        res.status(OK).json(user.filter({ role, method }))
-    } catch (error) {
-        return next(error)
-    }
-}
-
-export const showMe = async ({ user: { _id, role }, method }, res) => {
-    try {
-        const user = await User.findById(_id )
+        const user = await User.findById(id === 'me' ? _id : id)
 
         if (!user) {
             res.status(NOT_FOUND).end()

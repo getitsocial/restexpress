@@ -42,27 +42,6 @@ router.get('/', query(), index)
 /**
  * @swagger
  * path:
- *  api/users/me:
- *    get:
- *      summary: Get current user
- *      tags: [Users]
- *      security:
- *        - jwtSessionToken
- *      responses:
- *        "200":
- *          description: A user schema (fields depend on the ACL)
- *        "403":
- *          description: Missing permissions
- *        "404":
- *          description: User not found
- *        "500":
- *          description: Oh boi
- */
-router.get('/me', showMe)
-
-/**
- * @swagger
- * path:
  *  api/users/{userId}:
  *    get:
  *      summary: Get user
@@ -75,7 +54,7 @@ router.get('/me', showMe)
  *          schema:
  *            type: string
  *          required: true
- *          description: ObjectId of the user to get
+ *          description: ObjectId of the user to get or 'me' to get the current user
  *      responses:
  *        "200":
  *          description: A user schema (fields depend on the ACL)
