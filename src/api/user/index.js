@@ -17,41 +17,74 @@ import {
 
 const router = new Router()
 const { email, password, name, picture, role } = schema.tree
-
+// TODO: Pagination docs
 /**
- * @api {get} /users Retrieve users
- * @apiName RetrieveUsers
- * @apiGroup User
- * @apiPermission admin
- * @apiParam {String} access_token User access_token.
- * @apiSuccess {Object[]} users List of users.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError {Object} 403 admin access only.
- * @apiPermission admin
+ * @swagger
+ * path:
+ *  api/users/:
+ *    get:
+ *      summary: Get users
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken
+ *      responses:
+ *        "200":
+ *          description: A user schema array (fields depend on the ACL)
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
  */
 router.get('/', query(), index)
 
 /**
- * @api {get} /users/me Retrieve current user
- * @apiName RetrieveCurrentUser
- * @apiGroup User
- * @apiPermission user
- * @apiPermission admin
- * @apiError {Object} 403 user or admin access only
- * @apiParam {String} access_token User access_token.
- * @apiSuccess {Object} user User's data.
+ * @swagger
+ * path:
+ *  api/users/me:
+ *    get:
+ *      summary: Get current user
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken
+ *      responses:
+ *        "200":
+ *          description: A user schema (fields depend on the ACL)
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
  */
 router.get('/me', showMe)
 
 /**
- * @api {get} /users/:id Retrieve user
- * @apiName RetrieveUser
- * @apiGroup User
- * @apiPermission guest
- * @apiPermission user
- * @apiPermission admin
- * @apiSuccess {Object} user User's data.
- * @apiError 404 User not found.
+ * @swagger
+ * path:
+ *  api/users/{userId}:
+ *    get:
+ *      summary: Get user
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken
+ *      parameters:
+ *        - in: path
+ *          name: userId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the user to get
+ *      responses:
+ *        "200":
+ *          description: A user schema (fields depend on the ACL)
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
  */
 router.get('/:id', show)
 
@@ -84,6 +117,16 @@ router.get('/:id', show)
  *            application/json:
  *              schema:
  *                $ref: '#/components/schemas/User'
+ *        "400":
+ *          description: Invalid Body
+ *        "401":
+ *          description: Missing masterkey
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
  */
 router.post(
     '/',
@@ -100,32 +143,83 @@ router.post(
 )
 
 /**
- * @api {put} /users/:id Update user
- * @apiName UpdateUser
- * @apiGroup User
- * @apiPermission user
- * @apiPermission admin
- * @apiParam {String} access_token User access_token.
- * @apiParam {String} [name] User's name.
- * @apiParam {String} [picture] User's picture.
- * @apiSuccess {Object} user data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 403 Current user or admin access only.
- * @apiError 404 User not found.
+ * @swagger
+ * path:
+ *  api/users/{userId}:
+ *    put:
+ *      summary: Update user
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken
+ *      parameters:
+ *        - in: path
+ *          name: userId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the user to update
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                name:
+ *                  type: string
+ *                picture:
+ *                  type: string
+ *                  format: uri
+ *      responses:
+ *        "200":
+ *          description: User schema (fields depend on the ACL)
+ *        "400":
+ *          description: Invalid Body
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
  */
 router.put('/:id', body({ name, picture }), update)
 
 /**
- * @api {put} /users/:id/password Update password
- * @apiName UpdatePassword
- * @apiGroup User
- * @apiPermission user
- * @apiPermission admin
- * @apiParam {String} new password.
- * @apiSuccess (Success 201) {Object} user data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 403 Current user access only.
- * @apiError 404 User not found.
+ * @swagger
+ * path:
+ *  api/users/{userId}/password:
+ *    put:
+ *      summary: Update user password
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken
+ *      parameters:
+ *        - in: path
+ *          name: userId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the user to update
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                password:
+ *                  type: string
+ *      responses:
+ *        "204":
+ *          description: Successful update
+ *        "400":
+ *          description: Password doesn't match the requirements
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
  */
 router.put(
     '/:id/password',
@@ -135,17 +229,6 @@ router.put(
     updatePassword
 )
 
-/**
- * @api {delete} /users/:id Delete user
- * @apiName DeleteUser
- * @apiGroup User
- * @apiPermission admin
- * @apiPermission user
- * @apiParam {String} access_token User access_token.
- * @apiSuccess (Success 204) 204 No Content.
- * @apiError 403 Admin or user access only.
- * @apiError 404 User not found.
- */
 router.delete('/:id', destroy)
 
 export default router

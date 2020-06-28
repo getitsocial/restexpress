@@ -25,7 +25,14 @@ const isRevokedCallback = async (req, res, done) => {
 
 // Define user roles
 export const roles = ['guest', 'user', 'admin']
-
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     jwtSessionToken:
+ *       type: htto
+ *       scheme: bearer
+ */
 export const sign = async ({ _id, role }) =>
     jwtr.sign({ _id, role }, secret, { expiresIn: '8d' })
 
@@ -50,6 +57,6 @@ export const doorman = eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } })
  *     masterKey:
  *       type: apiKey
  *       in: query
-         name: master
+ *       name: master
  */
 export const masterman = () => (req, res, next) =>  masterKey === extractMaster(req) ? next() : res.status(401).end()

@@ -2,7 +2,25 @@ import mongoose, { Schema } from 'mongoose'
 import { paginate, filter, ownership } from 's/mongoose'
 import rules from './acl'
 import userAcl from 'a/user/acl'
-
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      Message:
+ *        type: object
+ *        required:
+ *          - content
+ *        properties:
+ *          content:
+ *            type: string
+ *            minLength: 2
+ *          author:
+ *            type: string
+ *            description: User ObjectId
+ *        example:
+ *           content: Hello World
+ *
+ */
 const messageSchema = new Schema(
     {
         content: {

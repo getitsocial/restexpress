@@ -26,10 +26,12 @@ const roles = ['guest', 'user', 'admin']
  *            description: Email for the user, needs to be unique.
  *          password:
  *            type: string
+ *            description: password is getting hashed bevore saving
  *          name:
  *            type: string
  *          services:
  *            type: object
+ *            description: only relevant for third party authentication
  *            properties:
  *              facebook:
  *                type: string
@@ -43,13 +45,16 @@ const roles = ['guest', 'user', 'admin']
  *          picture:
  *            type: string
  *            format: uri
+ *            description: default is a custom gravatar icon
  *          verified:
  *            type: boolean
  *            default: false
+ *            description: specifies whether the E-Mail address got verified
  *        example:
- *           name: Alexander
+ *           name: Marty
  *           email: fake@email.com
  *           password: VerySecurePassword123?!!!!
+ *
  */
 const userSchema = new Schema(
     {
