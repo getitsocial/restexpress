@@ -1,18 +1,17 @@
 import { Router } from 'express'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
-import { Message } from '~/api/message'
-import { User } from '~/api/user'
 import { swagger } from '~/config'
+import { Models } from '~/api'
 
 const specs = swaggerJSDoc(swagger)
 const router = new Router()
-// TODO: Dynamic imports maybe?
-specs.components.schemas = {}
-Object.assign(specs.components.schemas, { Message: Message.swaggerSchema })
-Object.assign(specs.components.schemas, { User: User.swaggerSchema })
 
-// console.log(specs)
+specs.components.schemas = {}
+Models.forEach((model) => {
+    specs.components.schemas[model.swaggerSchema.title] = model.swaggerSchema
+})
+
 router.use(swagger.url, swaggerUi.serve)
 router.get(
     swagger.url,
