@@ -15,6 +15,13 @@ import {
     destroy
 } from './controller'
 
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
+
 const router = new Router()
 const { email, password, name, picture, role } = schema.tree
 // TODO: Pagination docs
@@ -32,8 +39,6 @@ const { email, password, name, picture, role } = schema.tree
  *          description: A user schema array (fields depend on the ACL)
  *        "403":
  *          description: Missing permissions
- *        "404":
- *          description: User not found
  *        "500":
  *          description: Oh boi
  */
@@ -66,13 +71,6 @@ router.get('/', query(), index)
  *          description: Oh boi
  */
 router.get('/:id', show)
-
-/**
- * @swagger
- * tags:
- *   name: Users
- *   description: User management
- */
 
 /**
  * @swagger
@@ -226,7 +224,7 @@ router.put(
  *          description: ObjectId of the user to delete
  *      responses:
  *        "204":
- *          description: Successfully delete
+ *          description: Successfully deleted user
  *        "403":
  *          description: Missing permissions
  *        "404":
