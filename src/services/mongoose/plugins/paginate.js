@@ -3,9 +3,9 @@
  * This adds the pagination function
  * @param {querymen} querymen input
  * @param {options} options input
- * @returns {object} rows, count, nextPage, PrevPage, page
+ * @returns {object} rows, count, nextPage, PrevPage, page or empty object if something failed.
  */
-
+// TODO: better error handling
 // TODO: user select. Right now only +fields work
 export default function paginate(schema, { rules }) {
     schema.statics.paginate = async function({ query, cursor, select: userSelect }, options) {
