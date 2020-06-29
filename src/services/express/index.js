@@ -9,10 +9,10 @@ import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { env, rateLimiter, bugsnag } from '~/config'
 import acl from './acl'
+import swagger from './swagger'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginExpress from '@bugsnag/plugin-express'
 import { doorman } from 's/auth/guard'
-import swagger from 's/swagger'
 
 let bugsnagMiddleware
 if (env !== 'test') {

@@ -38,9 +38,10 @@ const config = {
                 welcome: 'd-e348a8a8a2f04a2e871e6fc6c26a5cfb',
                 forgot: 'd-ac2e091839ab4112b1be2ff7d9d2d6d3'
             },
-            defaultEmail: 'no-reply@getit.market'
+            defaultEmail: 'no-reply@your-website.com'
         },
         swagger: {
+            url: '/docs',
             swaggerDefinition: {
                 openapi: '3.0.0',
                 info: {
@@ -53,9 +54,9 @@ const config = {
                         url: 'https://github.com/tguelcan/restexpress/blob/master/LICENSE'
                     },
                     contact: {
-                        name: 'get-it team',
-                        url: 'https://getit.social',
-                        email: 'randy.kappa@gmail.com'
+                        name: 'restexpress team',
+                        url: 'https://your-website.com',
+                        email: 'your-email@your-website.com'
                     }
                 },
                 servers: [
@@ -64,7 +65,8 @@ const config = {
                     }
                 ]
             },
-            apis: ['src/**/*.js']
+            apis: ['src/**/*.js'],
+            definitions: {}
         }
     },
     test: {

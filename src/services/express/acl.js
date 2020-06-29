@@ -1,5 +1,6 @@
 import acl from 'express-acl'
 import rules from '~/api/acl'
+import { apiRoot } from '~/config'
 
 /**
  * DOC: https://github.com/nyambati/express-acl#readme
@@ -8,7 +9,7 @@ import rules from '~/api/acl'
 // acl configuration
 acl.config({
     //specify your own baseUrl
-    baseUrl: 'api',
+    baseUrl: apiRoot.replace(/^\/|\/$/g, ''),
     filename: 'acl.js',
     //path to acl (nacl) file
     rules: rules,

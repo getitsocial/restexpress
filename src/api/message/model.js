@@ -1,26 +1,9 @@
+import m2s from 'mongoose-to-swagger'
 import mongoose, { Schema } from 'mongoose'
 import { paginate, filter, ownership } from 's/mongoose'
 import rules from './acl'
 import userAcl from 'a/user/acl'
-/**
- * @swagger
- *  components:
- *    schemas:
- *      Message:
- *        type: object
- *        required:
- *          - content
- *        properties:
- *          content:
- *            type: string
- *            minLength: 2
- *          author:
- *            type: string
- *            description: User ObjectId
- *        example:
- *           content: Hello World
- *
- */
+
 const messageSchema = new Schema(
     {
         content: {
@@ -45,11 +28,13 @@ const messageSchema = new Schema(
     }
 )
 
+
 messageSchema.plugin(filter, { rules })
 messageSchema.plugin(paginate, { rules, populateRules: { author: userAcl } })
 messageSchema.plugin(ownership)
 
 const model = mongoose.model('Message', messageSchema)
-
+model.swaggerSchema = m2s(model)
 export const schema = model.schema
+
 export default model

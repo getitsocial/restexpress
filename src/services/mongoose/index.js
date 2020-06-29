@@ -5,6 +5,8 @@ export gravatar from './plugins/gravatar'
 export filter from './plugins/filter'
 export ownership from './plugins/ownership'
 
+const processMode =  process.env.NODE_ENV
+
 Object.keys(mongo.options).forEach(key => {
     mongoose.set(key, mongo.options[key])
 })
@@ -16,7 +18,11 @@ mongoose.connection.on('error', err => {
 })
 
 mongoose.connection.on('open', () => {
-    console.info('MongoDB connected')
+    console.info('\x1b[36m%s\x1b[0m', 'Mongoose:\x1b[0m Connected')
 })
+
+if (processMode !== 'test') {
+    mongoose.connect(mongo.uri)
+}
 
 export default mongoose
