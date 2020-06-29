@@ -208,6 +208,32 @@ router.put(
     updatePassword
 )
 
+/**
+ * @swagger
+ * path:
+ *  api/users/{userId}:
+ *    delete:
+ *      summary: Delete user
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken
+ *      parameters:
+ *        - in: path
+ *          name: userId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the user to delete
+ *      responses:
+ *        "204":
+ *          description: Successfully delete
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
+ */
 router.delete('/:id', destroy)
 
 export default router
