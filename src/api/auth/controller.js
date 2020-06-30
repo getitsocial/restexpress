@@ -3,15 +3,20 @@ import { sign, decodeJWT, destroy, comparePassword, providerAuth } from 's/auth'
 import { OK, NOT_FOUND, UNAUTHORIZED, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
 import { extractToken } from 's/auth/utils'
 
-const signHandler = async (user, res) => {
+const signHandler = async ({ user, session, sessionStore, sessionID }, res) => {
     // Sign Token
     const token = await sign(user)
     const { _id, role } = await decodeJWT(token)
 
+    console.log(sessionUser)
+    // Set session informations
+    session.userId = _id
+    session.token = token
+
     res.status(OK).json({ _id, role, token})
 }
 
-export const authenticate = async ({ body: { email, password } }, res, next) => {
+export const authenticate = async ({ body: { email, password }, session, sessionStore, sessionID }, res, next) => {
     // Pass value
     try {
         // Find user
@@ -36,7 +41,7 @@ export const authenticate = async ({ body: { email, password } }, res, next) => 
         }
 
         // Sign in user
-        await signHandler(user, res)
+        await signHandler({user, session, sessionStore, sessionID}, res)
     } catch (error) {
         next(error)
     }

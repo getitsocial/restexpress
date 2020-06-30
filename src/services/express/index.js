@@ -17,6 +17,7 @@ import Bugsnag from '@bugsnag/js'
 import BugsnagPluginExpress from '@bugsnag/plugin-express'
 import { doorman } from 's/auth/guard'
 
+console.log(session)
 let MongoStore = connectMongo(session)
 let bugsnagMiddleware
 if (env !== 'test') {
