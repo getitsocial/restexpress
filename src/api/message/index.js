@@ -23,7 +23,7 @@ const router = new Router()
  *      summary: Create a new Message
  *      tags: [Messages]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      requestBody:
  *        required: true
  *        content:
@@ -65,7 +65,7 @@ router.post(
  *      summary: Get messages
  *      tags: [Messages]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      responses:
  *        "200":
  *          description: A message schema array (fields depend on the ACL)
@@ -84,7 +84,7 @@ router.get('/', query(), index)
  *      summary: Get Message
  *      tags: [Messages]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: messageId
@@ -112,7 +112,7 @@ router.get('/:id', show)
  *      summary: Update message
  *      tags: [Messages]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: messageId
@@ -151,7 +151,7 @@ router.put('/:id', body({ content }), update)
  *      summary: Delete message
  *      tags: [Messages]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: messageId

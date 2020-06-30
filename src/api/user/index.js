@@ -33,7 +33,7 @@ const { email, password, name, picture, role } = schema.tree
  *      summary: Get users
  *      tags: [Users]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      responses:
  *        "200":
  *          description: A user schema array (fields depend on the ACL)
@@ -52,7 +52,7 @@ router.get('/', query(), index)
  *      summary: Get user
  *      tags: [Users]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: userId
@@ -80,7 +80,7 @@ router.get('/:id', show)
  *      summary: Create a new user
  *      tags: [Users]
  *      security:
- *        - masterKey
+ *        - masterKey: []
  *      requestBody:
  *        required: true
  *        content:
@@ -127,7 +127,7 @@ router.post(
  *      summary: Update user
  *      tags: [Users]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: userId
@@ -169,7 +169,7 @@ router.put('/:id', body({ name, picture }), update)
  *      summary: Update user password
  *      tags: [Users]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: userId
@@ -214,7 +214,7 @@ router.put(
  *      summary: Delete user
  *      tags: [Users]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: userId
