@@ -15,7 +15,7 @@
   <h3 align="center">RESTexpress</h3>
 
   <p align="center">
-    Restexpress is a highly customizable REST backend and API generator.
+    RESTexpress is a highly customizable REST backend and API generator.
     <br />
     <a href="https://github.com/tguelcan/restexpress"><strong>Explore the docs »</strong></a>
     <br />
@@ -50,7 +50,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Restexpress is a highly customizable REST backend and API generator.
+RESTexpress is a highly customizable REST backend and API generator.
 
 Here's why this is some cool shit:
 * Your time should be focused on creating amazing features, not thinking about authentication, user management and project structure.
