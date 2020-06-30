@@ -6,7 +6,7 @@ const permissions = [
                 resource: 'messages/*',
                 methods: ['GET', 'POST'],
                 action: 'allow',
-                view: ['content', 'author', 'author.name', 'author.email']
+                view: ['content', 'author', 'author.name', 'author.email', '_id']
             }
         ]
     },

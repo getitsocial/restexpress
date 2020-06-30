@@ -1,4 +1,4 @@
-import { decode } from 'jsonwebtoken'
+import jsonwebtoken from 'jsonwebtoken'
 import { createClient } from 'redis'
 import { default as JWTR } from 'jwt-redis'
 import eJWT from 'express-jwt'
@@ -6,12 +6,12 @@ import { extractToken, extractMaster } from 's/auth/utils'
 import { redis, jwt, masterKey } from '~/config'
 export const redisClient = createClient(redis)
 
-const jwtr = new JWTR(redisClient)
+// const jwtr = new JWTR(redisClient)
 
 // Get JWT Secret
 const { secret } = jwt
 
-export const verify = async (token, secret) => jwtr.verify(token, secret)
+export const verify = async (token, secret) => jsonwebtoken.verify(token, secret)
 
 const isRevokedCallback = async (req, res, done) => {
     try {
@@ -34,12 +34,12 @@ export const roles = ['guest', 'user', 'admin']
  *       scheme: bearer
  */
 export const sign = async ({ _id, role }) =>
-    jwtr.sign({ _id, role }, secret, { expiresIn: '8d' })
+    jsonwebtoken.sign({ _id, role }, secret, { expiresIn: '8d' })
 
-export const decodeJWT = async token => decode(token)
+export const decodeJWT = async token => jsonwebtoken.decode(token)
 
 // remove jti from redis
-export const destroyJTI = async jti => jwtr.destroy(jti, secret)
+export const destroyJTI = async jti => jsonwebtoken.destroy(jti, secret)
 
 // Destroy token from index
 export const destroy = async req => {
@@ -48,7 +48,7 @@ export const destroy = async req => {
 }
 
 // Main middleware validator
-export const doorman = eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } })
+export const doorman = eJWT({ ...jwt })
 
 /**
  * @swagger

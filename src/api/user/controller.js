@@ -39,6 +39,7 @@ export const create = async ({ bodymen: { body }, method, user }, res, next) => 
 
         res.status(CREATED).json(doc.filter({ role: user?.role, method }))
     } catch (error) {
+        console.log(error)
         if (isConflict(error)) {
             res.status(CONFLICT).end()
         }

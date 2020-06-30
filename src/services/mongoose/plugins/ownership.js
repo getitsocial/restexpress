@@ -9,6 +9,8 @@
  */
 export default function ownership(schema, { custom } = {}) {
     schema.statics.isOwner = function(doc, user) {
+        console.log(user)
+        console.log(doc)
         if (custom) {
             return custom(doc, user)
         }

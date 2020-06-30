@@ -7,13 +7,12 @@ sendgridMail.setApiKey(apiKey)
 // relevant github issue: https://github.com/sendgrid/sendgrid-nodejs/issues/1128
 const mail_settings = {
     sandbox_mode: {
-        enable: env === 'test'
+        enable: env !== 'production'
     }
 }
 
 export const sendDynamicMail = ({ from = defaultEmail, to, templateId, dynamic_template_data }) =>
     sendgridMail.send({ to, from, templateId, dynamic_template_data, mail_settings })
-
 
 
 const passwordResetLink = token =>

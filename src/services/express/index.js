@@ -5,15 +5,19 @@ import rateLimit from 'express-rate-limit'
 import compression from 'compression'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
+import session from 'express-session'
+import connectMongo from 'connect-mongo'
+import mongoose from 'mongoose'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
-import { env, rateLimiter, bugsnag } from '~/config'
+import { env, rateLimiter, bugsnag, jwt } from '~/config'
 import acl from './acl'
 import swagger from './swagger'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginExpress from '@bugsnag/plugin-express'
 import { doorman } from 's/auth/guard'
 
+let MongoStore = connectMongo(session)
 let bugsnagMiddleware
 if (env !== 'test') {
     Bugsnag.start({
@@ -41,6 +45,18 @@ export default (apiRoot, routes) => {
         app.use(compression())
         app.use(morgan('dev'))
         app.use(bugsnagMiddleware.errorHandler)
+        // Persist sessions with MongoStore / sequelizeStore
+        // We need to enable sessions for passport-twitter because it's an
+        // oauth 1.0 strategy, and Lusca depends on sessions
+        app.use(session({
+            secret: jwt.secret,
+            saveUninitialized: true,
+            resave: false,
+            store: new MongoStore({
+                mongooseConnection: mongoose.connection,
+                db: 'testprojects'
+            })
+        }))
     }
     if (env === 'development') {
         app.use(swagger)
