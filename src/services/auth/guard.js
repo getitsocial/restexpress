@@ -30,7 +30,7 @@ export const roles = ['guest', 'user', 'admin']
  * components:
  *   securitySchemes:
  *     jwtSessionToken:
- *       type: htto
+ *       type: http
  *       scheme: bearer
  */
 export const sign = async ({ _id, role }) =>

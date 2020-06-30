@@ -14,8 +14,7 @@
 		"start": "node .",
 		"serve": "node dist/server",
 		"test": "jest --maxWorkers=1 --detectOpenHandles",
-		"test:coverage": "yarn run test --coverage",
-		"docs": "./node_modules/.bin/jsdoc --configure jsdoc.conf"
+		"test:coverage": "yarn run test --coverage"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.10.1",

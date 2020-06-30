@@ -15,6 +15,13 @@ import {
     destroy
 } from './controller'
 
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
+
 const router = new Router()
 const { email, password, name, picture, role } = schema.tree
 // TODO: Pagination docs
@@ -26,14 +33,12 @@ const { email, password, name, picture, role } = schema.tree
  *      summary: Get users
  *      tags: [Users]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      responses:
  *        "200":
  *          description: A user schema array (fields depend on the ACL)
  *        "403":
  *          description: Missing permissions
- *        "404":
- *          description: User not found
  *        "500":
  *          description: Oh boi
  */
@@ -47,7 +52,7 @@ router.get('/', query(), index)
  *      summary: Get user
  *      tags: [Users]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: userId
@@ -69,20 +74,13 @@ router.get('/:id', show)
 
 /**
  * @swagger
- * tags:
- *   name: Users
- *   description: User management
- */
-
-/**
- * @swagger
  * path:
  *  api/users/:
  *    post:
  *      summary: Create a new user
  *      tags: [Users]
  *      security:
- *        - masterKey
+ *        - masterKey: []
  *      requestBody:
  *        required: true
  *        content:
@@ -129,7 +127,7 @@ router.post(
  *      summary: Update user
  *      tags: [Users]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: userId
@@ -171,7 +169,7 @@ router.put('/:id', body({ name, picture }), update)
  *      summary: Update user password
  *      tags: [Users]
  *      security:
- *        - jwtSessionToken
+ *        - jwtSessionToken: []
  *      parameters:
  *        - in: path
  *          name: userId
@@ -208,6 +206,32 @@ router.put(
     updatePassword
 )
 
+/**
+ * @swagger
+ * path:
+ *  api/users/{userId}:
+ *    delete:
+ *      summary: Delete user
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken: []
+ *      parameters:
+ *        - in: path
+ *          name: userId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the user to delete
+ *      responses:
+ *        "204":
+ *          description: Successfully deleted user
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
+ */
 router.delete('/:id', destroy)
 
 export default router

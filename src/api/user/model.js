@@ -1,3 +1,4 @@
+import m2s from 'mongoose-to-swagger'
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
 import { generate } from 'rand-token'
@@ -10,52 +11,6 @@ import { passwordValidator, emailValidator } from '~/utils/validator'
 import randtoken from 'rand-token'
 
 const roles = ['guest', 'user', 'admin']
-/**
- * @swagger
- *  components:
- *    schemas:
- *      User:
- *        type: object
- *        required:
- *          - password
- *          - email
- *        properties:
- *          email:
- *            type: string
- *            format: email
- *            description: Email for the user, needs to be unique.
- *          password:
- *            type: string
- *            description: password is getting hashed bevore saving
- *          name:
- *            type: string
- *          services:
- *            type: object
- *            description: only relevant for third party authentication
- *            properties:
- *              facebook:
- *                type: string
- *              github:
- *                type: string
- *              google:
- *                type: string
- *          role:
- *            type: string
- *            default: 'user'
- *          picture:
- *            type: string
- *            format: uri
- *            description: default is a custom gravatar icon
- *          verified:
- *            type: boolean
- *            default: false
- *            description: specifies whether the E-Mail address got verified
- *        example:
- *           name: Marty
- *           email: fake@email.com
- *           password: VerySecurePassword123?!!!!
- *
- */
 const userSchema = new Schema(
     {
         email: {
@@ -144,6 +99,6 @@ userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 userSchema.plugin(filter, { rules })
 
 const model = mongoose.model('User', userSchema)
-
+model.swaggerSchema = m2s(model)
 export const schema = model.schema
 export default model

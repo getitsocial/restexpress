@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import crypto from 'crypto'
 /**
  * This function replace the default userpicture with a gravatar

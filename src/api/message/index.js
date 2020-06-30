@@ -7,18 +7,45 @@ import { schema } from './model'
 export Message, { schema } from './model'
 
 const { content } = schema.tree
+/**
+ * @swagger
+ * tags:
+ *   name: Messages
+ *   description: Message management
+ */
 const router = new Router()
 
 /**
- * @api {post} /messages Create message
- * @apiName CreateMessage
- * @apiGroup Message
- * @apiParam {String} access_token user access token.
- * @apiSuccess {Object} message Message's data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 404 Message not found.
- * @apiPermission user
- * @apiError 401 user access only.
+ * @swagger
+ * path:
+ *  api/messages/:
+ *    post:
+ *      summary: Create a new Message
+ *      tags: [Messages]
+ *      security:
+ *        - jwtSessionToken: []
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                content:
+ *                  type: string
+ *      responses:
+ *        "201":
+ *          description: A message schema
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Message'
+ *        "400":
+ *          description: Invalid Body
+ *        "403":
+ *          description: Missing permissions
+ *        "500":
+ *          description: Oh boi
  */
 router.post(
     '/',
@@ -29,45 +56,118 @@ router.post(
     create
 )
 
+// TODO: Pagination docs
 /**
- * @api {get} /messages Retrieve messages
- * @apiName RetrieveMessages
- * @apiGroup Message
- * @apiParam {String} access_token user access token.
- * @apiUse listParams
- * @apiSuccess {Object[]} messages List of messages.
- * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @swagger
+ * path:
+ *  api/messages/:
+ *    get:
+ *      summary: Get messages
+ *      tags: [Messages]
+ *      security:
+ *        - jwtSessionToken: []
+ *      responses:
+ *        "200":
+ *          description: A message schema array (fields depend on the ACL)
+ *        "403":
+ *          description: Missing permissions
+ *        "500":
+ *          description: Oh boi
  */
 router.get('/', query(), index)
 
 /**
- * @api {get} /messages/:id Retrieve message
- * @apiName RetrieveMessage
- * @apiGroup Message
- * @apiParam {String} access_token user access token.
- * @apiSuccess {Object} message Message's data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 404 Message not found.
+ * @swagger
+ * path:
+ *  api/messages/{messageId}:
+ *    get:
+ *      summary: Get Message
+ *      tags: [Messages]
+ *      security:
+ *        - jwtSessionToken: []
+ *      parameters:
+ *        - in: path
+ *          name: messageId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the message to get
+ *      responses:
+ *        "200":
+ *          description: A message schema (fields depend on the ACL)
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: Message not found
+ *        "500":
+ *          description: Oh boi
  */
 router.get('/:id', show)
 
 /**
- * @api {put} /messages/:id Update message
- * @apiName UpdateMessage
- * @apiGroup Message
- * @apiParam {String} access_token user access token.
- * @apiSuccess {Object} message Message's data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 404 Message not found.
+ * @swagger
+ * path:
+ *  api/messages/{messageId}:
+ *    put:
+ *      summary: Update message
+ *      tags: [Messages]
+ *      security:
+ *        - jwtSessionToken: []
+ *      parameters:
+ *        - in: path
+ *          name: messageId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the message to update
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                content:
+ *                  type: string
+ *      responses:
+ *        "200":
+ *          description: Message schema (fields depend on the ACL)
+ *        "400":
+ *          description: Invalid Body
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: Message not found
+ *        "500":
+ *          description: Oh boi
  */
 router.put('/:id', body({ content }), update)
 
 /**
- * @api {delete} /messages/:id Delete message
- * @apiName DeleteMessage
- * @apiGroup Message
- * @apiSuccess (Success 204) 204 No Content.
- * @apiError 404 Message not found.
+ * @swagger
+ * path:
+ *  api/messages/{messageId}:
+ *    delete:
+ *      summary: Delete message
+ *      tags: [Messages]
+ *      security:
+ *        - jwtSessionToken: []
+ *      parameters:
+ *        - in: path
+ *          name: messageId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the message to delete
+ *      responses:
+ *        "204":
+ *          description: Successfully deleted message
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: Message not found
+ *        "500":
+ *          description: Oh boi
  */
 router.delete('/:id', destroy)
 

@@ -2,7 +2,6 @@
 import 'dotenv/config'
 import { extractToken } from 's/auth/utils'
 
-/* istanbul ignore next */
 const requireProcessEnv = name => {
     if (!process.env[name]) {
         throw new Error('You must set the ' + name + ' environment variable')
@@ -48,13 +47,13 @@ const config = {
                     title: 'RESTexpress',
                     version: '1.0.0',
                     description:
-                    'Restexpress is a highly customizable REST backend and API generator',
+                    'RESTexpress is a highly customizable REST backend and API generator',
                     license: {
                         name: 'MIT',
                         url: 'https://github.com/tguelcan/restexpress/blob/master/LICENSE'
                     },
                     contact: {
-                        name: 'restexpress team',
+                        name: 'RESTexpress team',
                         url: 'https://your-website.com',
                         email: 'your-email@your-website.com'
                     }

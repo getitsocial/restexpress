@@ -11,18 +11,23 @@ const mail_settings = {
     }
 }
 
-export const sendDynamicMail = ({ from = defaultEmail, to, templateId, dynamic_template_data }) => {
-    return sendgridMail.send({ to, from, templateId, dynamic_template_data, mail_settings })
-}
+export const sendDynamicMail = ({ from = defaultEmail, to, templateId, dynamic_template_data }) =>
+    sendgridMail.send({ to, from, templateId, dynamic_template_data, mail_settings })
 
-// eslint-disable-next-line max-len
-const passwordResetLink = token => env !== 'production' ? `http://${ip}:${port}${apiRoot}/password-reset/${token}` : `${process.env.APP_URL}/account/password-reset/${token}`
 
-// eslint-disable-next-line max-len
-const verificationLink = token => env !== 'production' ? `http://${ip}:${port}${apiRoot}/verification/${token}` : `${process.env.APP_URL}/account/verify/${token}`
 
-export const sendVerificationMail = ({ to, name, token }) => {
-    return sendgridMail.send({
+const passwordResetLink = token =>
+    env !== 'production' ?
+        `http://${ip}:${port}${apiRoot}/password-reset/${token}`
+        : `${process.env.APP_URL}/account/password-reset/${token}`
+
+const verificationLink = token =>
+    env !== 'production'
+        ? `http://${ip}:${port}${apiRoot}/verification/${token}`
+        : `${process.env.APP_URL}/account/verify/${token}`
+
+export const sendVerificationMail = ({ to, name, token }) =>
+    sendgridMail.send({
         to,
         from: defaultEmail,
         templateId: emailTemplates.welcome,
@@ -32,10 +37,10 @@ export const sendVerificationMail = ({ to, name, token }) => {
         },
         mail_settings
     })
-}
 
-export const sendPasswordResetMail = ({ to, name, token }) => {
-    return sendgridMail.send({
+
+export const sendPasswordResetMail = ({ to, name, token }) =>
+    sendgridMail.send({
         to,
         from: defaultEmail,
         templateId: emailTemplates.forgot,
@@ -45,4 +50,3 @@ export const sendPasswordResetMail = ({ to, name, token }) => {
         },
         mail_settings
     })
-}

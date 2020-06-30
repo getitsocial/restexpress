@@ -3,7 +3,6 @@ import { OK, NO_CONTENT, NOT_FOUND, FORBIDDEN, BAD_REQUEST } from 'http-status-c
 import User from 'a/user/model'
 import { sendPasswordResetMail } from 's/sendgrid'
 
-// TODO: Ask Tayfun if this route is really necessary:D
 export const show = async ({ params: { token } }, res, next) => {
     try {
         const reset = await PasswordReset.findOne({ token }).populate('user')
