@@ -51,7 +51,6 @@ export const create = async ({ bodymen: { body }, method, user }, res, next) => 
 
 export const update = async ({ bodymen: { body }, params, user, method }, res, next) => {
     try {
-        console.log(body)
         const doc = await User.findById(params.id)
 
         if (!doc) {

@@ -18,7 +18,7 @@ let adminUser,
     adminMessage,
     apiEndpoint = 'messages'
 
-beforeEach(async (done) => {
+beforeEach(async () => {
 
     adminUser = await User.create({
         name: 'Marty',
@@ -38,8 +38,8 @@ beforeEach(async (done) => {
     userMessage = await Message.create({ content: 'yoot', author: defaultUser._id })
     adminMessage = await Message.create({ content: 'yuut', author: adminUser._id })
     // Sign in user
-    adminToken = await sign(adminUser)
-    defaultToken = await sign(defaultUser)
+    adminToken = (await sign(adminUser)).token
+    defaultToken = (await sign(defaultUser)).token
 
     const messages = Array(100)
 
@@ -49,7 +49,6 @@ beforeEach(async (done) => {
 
     await Message.insertMany(messages)
 
-    done()
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {

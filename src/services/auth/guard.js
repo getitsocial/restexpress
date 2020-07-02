@@ -29,7 +29,7 @@ export const roles = ['guest', 'user', 'admin']
  *       type: http
  *       scheme: bearer
  */
-export const sign = async ({ _id, role, device }) => {
+export const sign = async ({ _id, role, device = {} }) => {
     try {
         const token = await jwt.sign({ _id, role }, secret, { expiresIn: jwtConfig.expiresIn, jwtid: uid(12) })
         const tokenInformation = await jwt.decode(token)
@@ -47,7 +47,7 @@ export const sign = async ({ _id, role, device }) => {
 export const decodeJWT = async token => jwt.decode(token)
 
 // Destroy token from index
-export const destroy = async req => {
+export const destroy = async (req) => {
     const { jti } = await jwt.decode(extractToken(req))
     await Session.findOneAndRemove({ jti })
 }

@@ -25,7 +25,6 @@ let mongoServer
 
 beforeAll(async () => {
     jest.setTimeout(45000)
-
     mongoServer = new MongodbMemoryServer()
     const mongoUri = await mongoServer.getConnectionString()
     await mongoose.connect(mongo.uri, {
@@ -39,17 +38,16 @@ beforeAll(async () => {
     })
 }, 45000)
 
-afterAll(async (done) => {
-    mongoose.connection.close()
+afterAll(async () => {
+    await mongoose.disconnect()
     mongoServer.stop()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
     const { collections } = mongoose.connection
     const promises = []
     Object.keys(collections).forEach((collection) => {
         promises.push(collections[collection].deleteMany())
     })
     await Promise.all(promises)
-    done()
 })

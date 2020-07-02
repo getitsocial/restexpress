@@ -15,12 +15,10 @@ const sessionSchema = new Schema(
         },
         device: {
             type: {
-                type: String,
-                required: true,
+                type: String
             },
             name: {
-                type: String,
-                required: true,
+                type: String
             },
         },
         createdAt: {

@@ -16,7 +16,7 @@ let defaultUser,
     token,
     apiEndpoint = 'password-reset'
 
-beforeEach(async (done) => {
+beforeEach(async () => {
 
     adminUser = await User.create({
         nane: 'Marty',
@@ -34,8 +34,8 @@ beforeEach(async (done) => {
         verified: true
     })
 
-    defaultToken = await sign(defaultUser)
-    adminToken = await sign(adminUser)
+    defaultToken = (await sign(defaultUser)).token
+    adminToken = (await sign(adminUser)).token
 
     const reset = await PasswordReset.create({
         user: defaultUser._id
@@ -43,7 +43,6 @@ beforeEach(async (done) => {
 
     token = reset.token
 
-    done()
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {

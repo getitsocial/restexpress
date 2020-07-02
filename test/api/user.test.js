@@ -14,8 +14,7 @@ let adminUser,
     defaultToken,
     apiEndpoint = 'users'
 
-beforeEach(async (done) => {
-
+beforeEach(async () => {
     adminUser = await User.create({
         name: 'Marty',
         email: 'marty@getit.social',
@@ -31,20 +30,20 @@ beforeEach(async (done) => {
     })
 
     // Sign in user
-    adminToken = await sign(adminUser)
-    defaultToken = await sign(defaultUser)
+    adminToken = (await sign(adminUser)).token
+    defaultToken = (await sign(defaultUser)).token
 
-    done()
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
     // INDEX
     test(`GET ${apiRoot}/${apiEndpoint} USER FORBIDDEN`, async () => {
-        const { status } = await request(server)
+        const { status, error } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
 
+        console.log(error)
         expect(status).toBe(FORBIDDEN)
     })
 

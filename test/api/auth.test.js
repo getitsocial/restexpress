@@ -4,14 +4,16 @@ import { jwtConfig, masterKey, apiRoot } from '~/config'
 import { verify } from 's/auth'
 import { sign, decode } from 's/auth'
 import User from 'a/user/model'
-import destroy from 'jwt'
+import Session from 'a/session'
+
 import { OK, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'
 
 const { secret } = jwtConfig
 
 let adminToken,
     defaultToken,
-    adminUser
+    adminUser,
+    defaultUser
 
 beforeEach(async () => {
 
@@ -31,7 +33,7 @@ beforeEach(async () => {
         verified: false
     })
 
-    const defaultUser = await User.create({
+    defaultUser = await User.create({
         name: 'Marty',
         email: 'marty0@getit.social',
         password: 'Passwort213!!!',
@@ -39,8 +41,8 @@ beforeEach(async () => {
         verified: false
     })
 
-    defaultToken = await sign(defaultUser)
-    adminToken = await sign(adminUser)
+    defaultToken = (await sign(defaultUser)).token
+    adminToken = (await sign(adminUser)).token
 
 })
 
@@ -109,7 +111,7 @@ describe('Auth Test:', () => {
 
         expect(statusCode).toBe(NO_CONTENT)
 
-        await expect(verify(adminToken, secret)).rejects.toThrow()
+        expect(await Session.exists({ user: adminUser._id})).toBe(false)
     })
 
     test('POST /auth/logout BAD_REQUEST', async () => {
@@ -117,7 +119,7 @@ describe('Auth Test:', () => {
             .post(`${apiRoot}/auth/logout`)
 
         expect(statusCode).toBe(BAD_REQUEST)
-        await expect(verify(adminToken, secret)).resolves.not.toThrow()
+        expect(await Session.exists({ user: defaultUser._id})).toBe(true)
     })
 
 })

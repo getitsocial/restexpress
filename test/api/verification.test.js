@@ -15,7 +15,7 @@ let defaultUser,
     token,
     apiEndpoint = 'verification'
 
-beforeEach(async (done) => {
+beforeEach(async () => {
 
     defaultUser = await User.create({
         nane: 'Marty',
@@ -32,8 +32,8 @@ beforeEach(async (done) => {
     })
 
     // Sign in user
-    adminToken = await sign(adminUser)
-    defaultToken = await sign(defaultUser)
+    adminToken = (await sign(adminUser)).token
+    defaultToken = (await sign(defaultUser)).token
 
     const verification = await Verification.create({
         user: defaultUser._id
@@ -41,7 +41,6 @@ beforeEach(async (done) => {
 
     token = verification.token
 
-    done()
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
