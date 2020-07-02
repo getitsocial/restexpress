@@ -1,4 +1,5 @@
 import express from 'express'
+import device from 'express-device'
 import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
@@ -41,6 +42,7 @@ export default (apiRoot, routes) => {
         app.use(compression())
         app.use(morgan('dev'))
         app.use(bugsnagMiddleware.errorHandler)
+        app.use(device.capture({ parseUserAgent: true }))
     }
     if (env === 'development') {
         app.use(swagger)

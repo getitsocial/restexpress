@@ -1,13 +1,13 @@
 import request from 'supertest'
 import server from '~/server'
-import { jwt, masterKey, apiRoot } from '~/config'
+import { jwtConfig, masterKey, apiRoot } from '~/config'
 import { verify } from 's/auth'
 import { sign, decode } from 's/auth'
 import User from 'a/user/model'
-import { TokenDestroyedError } from 'jwt-redis'
+import destroy from 'jwt'
 import { OK, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'
 
-const { secret } = jwt
+const { secret } = jwtConfig
 
 let adminToken,
     defaultToken,
@@ -109,7 +109,7 @@ describe('Auth Test:', () => {
 
         expect(statusCode).toBe(NO_CONTENT)
 
-        await expect(verify(adminToken, secret)).rejects.toThrow(TokenDestroyedError)
+        await expect(verify(adminToken, secret)).rejects.toThrow()
     })
 
     test('POST /auth/logout BAD_REQUEST', async () => {
@@ -117,7 +117,7 @@ describe('Auth Test:', () => {
             .post(`${apiRoot}/auth/logout`)
 
         expect(statusCode).toBe(BAD_REQUEST)
-        await expect(verify(adminToken, secret)).resolves.not.toThrow(TokenDestroyedError)
+        await expect(verify(adminToken, secret)).resolves.not.toThrow()
     })
 
 })
