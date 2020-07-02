@@ -29,9 +29,13 @@ const sessionSchema = new Schema(
     },
 )
 
-// TODO: work with indexes
+// TODO: work with indices
 
 const model = mongoose.model('Session', sessionSchema)
 export const schema = model.schema
-
+schema.statics = {
+    deleteAllUserSessions: async function(user) {
+        await model.deleteMany({ user })
+    }
+}
 export default model
