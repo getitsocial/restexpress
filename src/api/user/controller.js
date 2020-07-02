@@ -31,6 +31,12 @@ export const show = async ({ user: { _id, role }, method, params: { id } }, res)
 
 export const create = async ({ bodymen: { body }, method, user }, res, next) => {
     try {
+
+        if (await User.findOne({ email: body.email }) !== null) {
+            res.status(CONFLICT).send(res.__('email-conflict'))
+            return
+        }
+
         const doc = await User.create(body)
 
         const { token } = await Verification.create({ user: doc._id })
@@ -39,15 +45,13 @@ export const create = async ({ bodymen: { body }, method, user }, res, next) => 
 
         res.status(CREATED).json(doc.filter({ role: user?.role, method }))
     } catch (error) {
-        if (isConflict(error)) {
-            res.status(CONFLICT).end()
-        }
         return next(error)
     }
 }
 
 export const update = async ({ bodymen: { body }, params, user, method }, res, next) => {
     try {
+        console.log(body)
         const doc = await User.findById(params.id)
 
         if (!doc) {

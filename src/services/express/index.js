@@ -8,12 +8,13 @@ import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
-import { env, rateLimiter, bugsnag } from '~/config'
+import { env, rateLimiter, bugsnag, i18nConfig } from '~/config'
 import acl from './acl'
 import swagger from './swagger'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginExpress from '@bugsnag/plugin-express'
 import { doorman } from 's/auth/guard'
+import i18n from 'i18n'
 
 let bugsnagMiddleware
 if (env !== 'test') {
@@ -29,6 +30,8 @@ if (env !== 'test') {
 // app.set('trust proxy', 1);
 // istanbul ignore next
 const limiter = rateLimit(rateLimiter)
+
+i18n.configure(i18nConfig)
 
 export default (apiRoot, routes) => {
     const app = express()
@@ -47,6 +50,7 @@ export default (apiRoot, routes) => {
     if (env === 'development') {
         app.use(swagger)
     }
+    app.use(i18n.init)
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(bodyParser.json())
     app.use(doorman)

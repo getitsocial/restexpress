@@ -7,7 +7,7 @@ sendgridMail.setApiKey(apiKey)
 // relevant github issue: https://github.com/sendgrid/sendgrid-nodejs/issues/1128
 const mail_settings = {
     sandbox_mode: {
-        enable: env === 'test'
+        enable: env !== 'production'
     }
 }
 
