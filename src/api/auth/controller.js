@@ -5,13 +5,11 @@ import { extractToken } from 's/auth/utils'
 
 const signHandler = async (user, res) => {
     // Sign Token
-    const token = await sign(user)
-    const { _id, role } = await decodeJWT(token)
-
+    const { _id, role, token } = await sign(user)
     res.status(OK).json({ _id, role, token})
 }
 
-export const authenticate = async ({ body: { email, password } }, res, next) => {
+export const authenticate = async ({ body: { email, password }, device }, res, next) => {
     // Pass value
     try {
         // Find user
@@ -34,6 +32,9 @@ export const authenticate = async ({ body: { email, password } }, res, next) => 
             res.status(UNAUTHORIZED).json({ valid: false, message: 'Wrong password or E-mail' }).end()
             return
         }
+
+        // Assign device to user
+        user.device = device
 
         // Sign in user
         await signHandler(user, res)

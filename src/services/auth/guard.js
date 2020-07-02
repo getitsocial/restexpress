@@ -1,24 +1,20 @@
-import { decode } from 'jsonwebtoken'
-import { createClient } from 'redis'
-import { default as JWTR } from 'jwt-redis'
+import jwt from 'jsonwebtoken'
 import eJWT from 'express-jwt'
+import Session from '~/api/session'
+import { uid } from 'rand-token'
 import { extractToken, extractMaster } from 's/auth/utils'
-import { redis, jwt, masterKey } from '~/config'
-export const redisClient = createClient(redis)
-
-const jwtr = new JWTR(redisClient)
+import { jwtConfig, masterKey } from '~/config'
 
 // Get JWT Secret
-const { secret } = jwt
+const { secret } = jwtConfig
 
-export const verify = async (token, secret) => jwtr.verify(token, secret)
+export const verify = async (token, secret) => jwt.verify(token, secret)
 
 const isRevokedCallback = async (req, res, done) => {
     try {
-        await verify(extractToken(req), secret)
-        return done(null, false)
+        const { jti } = await verify(extractToken(req), secret)
+        return done(null, !await Session.exists({ jti }))
     } catch (error) {
-        // console.log('teeest')
         return done(null, true)
     }
 }
@@ -33,22 +29,31 @@ export const roles = ['guest', 'user', 'admin']
  *       type: http
  *       scheme: bearer
  */
-export const sign = async ({ _id, role }) =>
-    jwtr.sign({ _id, role }, secret, { expiresIn: '8d' })
+export const sign = async ({ _id, role, device }) => {
+    try {
+        const token = await jwt.sign({ _id, role }, secret, { expiresIn: jwtConfig.expiresIn, jwtid: uid(12) })
+        const tokenInformation = await jwt.decode(token)
+        await Session.create({ jti: tokenInformation.jti, user: _id, device })
+        return Object.assign(tokenInformation, { token })
+    } catch (error) {
+    // TODO: error handling (catch and response)
+    // TODO: if token expired -> force remove from collection
+        console.log(error)
+    }
 
-export const decodeJWT = async token => decode(token)
+}
 
-// remove jti from redis
-export const destroyJTI = async jti => jwtr.destroy(jti, secret)
+
+export const decodeJWT = async token => jwt.decode(token)
 
 // Destroy token from index
 export const destroy = async req => {
-    const { jti } = await decode(extractToken(req))
-    await destroyJTI(jti)
+    const { jti } = await jwt.decode(extractToken(req))
+    await Session.findOneAndRemove({ jti })
 }
 
 // Main middleware validator
-export const doorman = eJWT({ ...jwt, ...{ isRevoked: isRevokedCallback } })
+export const doorman = eJWT({ ...jwtConfig, ...{ isRevoked: isRevokedCallback } })
 
 /**
  * @swagger

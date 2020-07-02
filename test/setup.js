@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events'
 import MongodbMemoryServer from 'mongodb-memory-server'
 import mongoose from 's/mongoose'
-import { redisClient } from 's/auth'
 import { mongo } from '~/config'
 
 EventEmitter.defaultMaxListeners = Infinity
@@ -43,10 +42,6 @@ beforeAll(async () => {
 afterAll(async (done) => {
     mongoose.connection.close()
     mongoServer.stop()
-    redisClient.on('end', () => {
-        done()
-    })
-    redisClient.quit()
 })
 
 afterEach(async (done) => {

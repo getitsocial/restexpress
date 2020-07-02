@@ -16,13 +16,11 @@ const config = {
         ip: process.env.IP || '0.0.0.0',
         apiRoot: process.env.API_ROOT || '/api',
         masterKey: requireProcessEnv('MASTER_KEY'),
-        jwt: {
+        jwtConfig: {
             secret: requireProcessEnv('JWT_SECRET'),
             credentialsRequired: false,
-            getToken: req => extractToken(req)
-        },
-        redis: {
-            url: requireProcessEnv('REDIS_URL')
+            getToken: req => extractToken(req),
+            expiresIn: '8d'
         },
         rateLimiter: {
             windowMs: 15 * 60 * 1000, // 15 minutes
@@ -80,7 +78,7 @@ const config = {
                 useCreateIndex: true,
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
-                useFindAndModify: true
+                useFindAndModify: false
             }
         }
     },
@@ -91,7 +89,8 @@ const config = {
                 debug: true,
                 useCreateIndex: true,
                 useNewUrlParser: true,
-                useUnifiedTopology: true
+                useUnifiedTopology: true,
+                useFindAndModify: false
             }
         }
     },
