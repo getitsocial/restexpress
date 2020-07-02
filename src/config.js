@@ -66,6 +66,10 @@ const config = {
             },
             apis: ['src/**/*.js'],
             definitions: {}
+        },
+        i18nConfig: {
+            locales: ['en', 'de'],
+            directory: __dirname + '/locales'
         }
     },
     test: {
