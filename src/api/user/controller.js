@@ -19,7 +19,7 @@ export const show = async ({ user: { _id, role }, method, params: { id } }, res)
         const user = await User.findById(id === 'me' ? _id : id)
 
         if (!user) {
-            res.status(NOT_FOUND).end()
+            res.status(NOT_FOUND).json({ message: res.__('user-not-found')})
             return
         }
 
@@ -33,7 +33,7 @@ export const create = async ({ bodymen: { body }, method, user }, res, next) => 
     try {
 
         if (await User.findOne({ email: body.email }) !== null) {
-            res.status(CONFLICT).send(res.__('email-conflict'))
+            res.status(CONFLICT).json({ message: res.__('email-conflict') })
             return
         }
 

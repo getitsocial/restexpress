@@ -1,3 +1,4 @@
 {
-    "email-conflict": "A user with this E-Mail already exists"
+    "email-conflict": "A user with this E-Mail already exists",
+    "user-not-found": "This user was not found"
 }
