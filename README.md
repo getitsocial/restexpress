@@ -144,7 +144,18 @@ import { yourPlugin } from 's/mongoose'
 
 ### Adding routes
 
-TODO: Endpoint generator
+```sh
+yarn run generate
+```
+Enter your resource name
+
+=> All required files should now be generated and you can start writing code!
+
+1. Define ACL in /api/resource-name/acl.js
+2. Define model in /api/resource-name/model.js
+3. Write tests in /tests/api/resoure-name.test.js
+4. Add middleware in /api/resource-name/index.js
+5. Implement controllers in /api/resource-name/controller.js
 
 
 ### Services
