@@ -7,7 +7,6 @@ import { errorHandler } from 's/response'
 
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
-        throw new Error('yeet')
         const users = await User.paginate(querymen, { method, user, filter: true })
         res.status(OK).json(users)
     } catch (error) {

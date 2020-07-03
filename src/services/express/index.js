@@ -16,6 +16,7 @@ import BugsnagPluginExpress from '@bugsnag/plugin-express'
 import { doorman } from 's/auth/guard'
 import i18n from 'i18n'
 
+// Obviously optional. Use whatever loggin solution you like!
 let bugsnagMiddleware
 if (env !== 'test') {
     Bugsnag.start({
@@ -38,13 +39,13 @@ export default (apiRoot, routes) => {
     /* istanbul ignore next */
 
     if (env === 'production' || env === 'development') {
-        app.use(bugsnagMiddleware.requestHandler)
+        app.use(bugsnagMiddleware.requestHandler) // remove if you don't want to use bugsnag
         app.use(helmet())
         app.use(limiter)
         app.use(cors())
         app.use(compression())
         app.use(morgan('dev'))
-        app.use(bugsnagMiddleware.errorHandler)
+        app.use(bugsnagMiddleware.errorHandler) // remove if you don't want to use bugsnag
         app.use(device.capture({ parseUserAgent: true }))
     }
     if (env === 'development') {
