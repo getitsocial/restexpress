@@ -39,6 +39,7 @@
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
 * [Usage](#usage)
+* [Deployment](#usage)
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
 * [License](#license)
@@ -161,6 +162,12 @@ Enter your resource name
 ### Services
 1. Create your new service in a separate folder in `src/services`
 2. Import it when necessary with `s/yourservice`
+
+<!-- Deployment -->
+## Deployment
+
+// TODO:
+// Add steps or link to tutorial for Heroku and docker based deployment
 
 <!-- ROADMAP -->
 ## Roadmap
