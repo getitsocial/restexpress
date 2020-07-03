@@ -1,6 +1,8 @@
 import { PasswordReset } from '.'
 import { OK, NO_CONTENT, NOT_FOUND, FORBIDDEN, BAD_REQUEST } from 'http-status-codes'
 import User from 'a/user/model'
+import Session from 'a/session/model'
+
 import { sendPasswordResetMail } from 's/sendgrid'
 
 export const show = async ({ params: { token } }, res, next) => {
@@ -68,6 +70,7 @@ export const update = async ({ bodymen: { body: { password }}, params: { token }
 
         await user.set({ password }).save()
         await PasswordReset.deleteOne({ user })
+        await Session.deleteAllUserSessions(user._id)
 
         res.status(NO_CONTENT).end()
 

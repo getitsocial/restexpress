@@ -4,6 +4,7 @@ import request from 'supertest'
 import server from '~/server'
 import { Router } from 'express'
 import User from 'a/user/model'
+import Session from 'a/session/model'
 import { sign } from 's/auth'
 import { apiRoot, masterKey } from '~/config'
 import PasswordReset from 'a/password-reset/model'
@@ -176,6 +177,8 @@ describe(`TEST ${apiRoot}/${apiEndpoint}`,  () => {
         expect(oldUser.password).not.toBe(updatedUser.password)
         const reset = await PasswordReset.findOne({ token })
         expect(reset).toBeNull()
+
+        expect(await Session.exists({ user: defaultUser._id })).toBe(false)
     })
 
     test(`GET ${apiRoot}/${apiEndpoint}/:token GUEST OK`, async () => {
