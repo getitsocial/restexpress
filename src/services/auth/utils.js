@@ -44,20 +44,20 @@ export const extractMaster = req => {
 }
 
 /**
- * Validate Middleware - canot create user with another roles
+ * Validate Middleware - cannot create user with another roles
  */
 export const validateUserBeforeCreate = () => ({ body }, res, next) =>
 	body?.role ? res.status(401).end() : next()
 
 /**
- * Hash the Password with bcrypt
+ * Hash the Password with argon2
  * @param {string} password
  * @returns {Promise} The hashed password.
  */
 export const hashPassword = async password => await hash(password)
 
 /**
- * Compare the bcrypt password
+ * Compare the argon2 password
  * @param {string} password
  * @returns {Promise} The boolean compared return
  */
