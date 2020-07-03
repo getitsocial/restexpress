@@ -1,5 +1,5 @@
-import User from '~/api/user/model'
-import Session from '~/api/session/model'
+import { User } from 'a/user'
+import { Session } from 'a/session'
 import { sign, decodeJWT, destroy, comparePassword, providerAuth } from 's/auth'
 import { OK, NOT_FOUND, UNAUTHORIZED, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
 import { extractToken } from 's/auth/utils'
@@ -19,19 +19,19 @@ export const authenticate = async ({ body: { email, password }, device }, res, n
 
         if (!user) {
             // We do not want to tell the user that the email doesnt exist...
-            res.status(UNAUTHORIZED).json({ valid: false, message: 'Wrong password or E-mail' }).end()
+            res.status(UNAUTHORIZED).json({ valid: false, message: res.__('wrong-credentials') }).end()
             return
         }
 
         if (!user.verified) {
-            res.status(UNAUTHORIZED).json({ valid: false, message: 'Your E-mail is not verified' }).end()
+            res.status(UNAUTHORIZED).json({ valid: false, message: res.__('unverified') }).end()
             return
         }
 
         // Compare password
         const comparedPassword = await comparePassword(user.password, password)
         if (!comparedPassword) {
-            res.status(UNAUTHORIZED).json({ valid: false, message: 'Wrong password or E-mail' }).end()
+            res.status(UNAUTHORIZED).json({ valid: false, message: res.__('wrong-credentials') }).end()
             return
         }
 
@@ -65,7 +65,7 @@ export const providerAuthenticate = async ({ body, params }, res, next) => {
 export const logout = async (req, res, next) => {
     try {
         if (extractToken(req) === null) {
-            res.status(BAD_REQUEST).end()
+            res.status(BAD_REQUEST).json({ valid: false, message: res.__('missing-token') }).end()
             return
         }
         await destroy(req)
@@ -78,7 +78,7 @@ export const logout = async (req, res, next) => {
 export const logoutAll = async (req, res, next) => {
     try {
         if (extractToken(req) === null) {
-            res.status(BAD_REQUEST).end()
+            res.status(BAD_REQUEST).json({ valid: false, message: res.__('missing-token') }).end()
             return
         }
         const { user: { _id } } = req

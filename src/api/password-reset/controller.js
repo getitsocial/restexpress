@@ -1,7 +1,7 @@
 import { PasswordReset } from '.'
 import { OK, NO_CONTENT, NOT_FOUND, FORBIDDEN, BAD_REQUEST } from 'http-status-codes'
-import User from 'a/user/model'
-import Session from 'a/session/model'
+import { User } from 'a/user'
+import { Session } from 'a/session'
 import { errorHandler } from 's/response'
 import { sendPasswordResetMail } from 's/sendgrid'
 
@@ -10,7 +10,7 @@ export const show = async ({ params: { token } }, res, next) => {
         const reset = await PasswordReset.findOne({ token }).populate('user')
 
         if (!reset || !reset.user) {
-            res.status(BAD_REQUEST).end()
+            res.status(BAD_REQUEST).json({ valid: false, message: res.__('invalid-parameters') }).end()
             return
         }
         const { picture, name } = reset.user
@@ -44,19 +44,7 @@ export const create = async ({ bodymen: { body: { email } } }, res, next) => {
     }
 
 }
-/*
-    TODO:
-    Figure out how we can destroy all sessions which the user might still have.
-    Solution 1:
-    Have an additional storage (mongo, redis) which can match users to a set of tokens
 
-    Solution 2:
-    Only allow active session on one device. Could be kinda annoying.
-    I don't think this is a good idea. (Use _id as jti)
-
-    Solution 2:
-    Fuck redis, lets just use something like connect-mongo. ONE DATABASE TO RULE THEM ALL!
-*/
 export const update = async ({ bodymen: { body: { password }}, params: { token } }, res, next) => {
 
     try {
@@ -64,7 +52,7 @@ export const update = async ({ bodymen: { body: { password }}, params: { token }
 
         if (!user || !user.verified) {
             // Is 403 the right code? We should also monitor this endpoint closely
-            res.status(FORBIDDEN).end()
+            res.status(FORBIDDEN).json({ valid: false, message: res.__('missing-permission') }).end()
             return
         }
 

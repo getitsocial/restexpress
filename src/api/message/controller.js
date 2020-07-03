@@ -1,4 +1,3 @@
-import { merge } from 'lodash'
 import { Message } from '.'
 import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
 import { errorHandler } from 's/response'
@@ -24,7 +23,7 @@ export const show = async ({ params: { id }, method, user }, res, next) => {
         const message = await Message.findById(id).populate('author')
 
         if (!message) {
-            res.status(NOT_FOUND).end()
+            res.status(NOT_FOUND).json({ valid: false, message: res.__('not-found') }).end()
             return
         }
 
@@ -51,12 +50,12 @@ export const update = async ({ bodymen: { body }, user, method, params: { id } }
         const message = await Message.findById(id).populate('author')
 
         if (!message) {
-            res.status(NOT_FOUND).end()
+            res.status(NOT_FOUND).json({ valid: false, message: res.__('not-found') }).end()
             return
         }
 
         if (!Message.isOwner(message, user)) {
-            res.status(FORBIDDEN).end()
+            res.status(FORBIDDEN).json({ valid: false, message: res.__('missing-permission') }).end()
             return
         }
 
@@ -74,12 +73,12 @@ export const destroy = async ({ params: { id }, user }, res, next) => {
         const message = await Message.findById(id)
 
         if (!message) {
-            res.status(NOT_FOUND).end()
+            res.status(NOT_FOUND).json({ valid: false, message: res.__('not-found') }).end()
             return
         }
 
         if (!Message.isOwner(message, user)) {
-            res.status(FORBIDDEN).end()
+            res.status(FORBIDDEN).json({ valid: false, message: res.__('missing-permission') }).end()
             return
         }
 

@@ -7,7 +7,7 @@ export const verify = async ({ params: { token } }, res, next) => {
         const verification = await Verification.findOne({ token }).populate('user')
 
         if (!verification || !verification.user) {
-            res.status(NOT_FOUND).end()
+            res.status(NOT_FOUND).json({ valid: false, message: res.__('not-found')})
             return
         }
 
