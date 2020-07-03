@@ -55,7 +55,7 @@ const config = {
                 },
                 servers: [
                     {
-                        url: 'http://localhost:8080/docs'
+                        url: 'http://localhost:8080/'
                     }
                 ]
             },

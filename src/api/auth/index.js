@@ -14,7 +14,7 @@ const router = new Router()
 /**
  * @swagger
  * path:
- *  api/auth/:
+ *  /api/auth/:
  *    post:
  *      summary: Login
  *      tags: [Authentication]
@@ -74,7 +74,7 @@ router.post(
 /**
  * @swagger
  * path:
- *  api/auth/logout:
+ *  /api/auth/logout:
  *    post:
  *      summary: Logout the current session
  *      tags: [Authentication]
@@ -93,7 +93,7 @@ router.post('/logout', logout)
 /**
  * @swagger
  * path:
- *  api/auth/logout/all:
+ *  /api/auth/logout/all:
  *    post:
  *      summary: Logout all sessions which are associated with the user
  *      tags: [Authentication]
@@ -114,7 +114,7 @@ router.post('/logout/all', logoutAll)
 /**
  * @swagger
  * path:
- *  api/auth/{provider}:
+ *  /api/auth/{provider}:
  *    post:
  *      summary: Login with 3rd party
  *      tags: [Authentication]

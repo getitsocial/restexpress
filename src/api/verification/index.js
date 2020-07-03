@@ -18,7 +18,7 @@ const { token } = schema.tree
 /**
  * @swagger
  * path:
- *  api/verification/{token}:
+ *  /api/verification/{token}:
  *    get:
  *      summary: Verify user
  *      tags: [Verification]

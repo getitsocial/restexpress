@@ -28,7 +28,7 @@ const { email, password, name, picture, role } = schema.tree
 /**
  * @swagger
  * path:
- *  api/users/:
+ *  /api/users/:
  *    get:
  *      summary: Get users
  *      tags: [Users]
@@ -47,7 +47,7 @@ router.get('/', query(), index)
 /**
  * @swagger
  * path:
- *  api/users/{userId}:
+ *  /api/users/{userId}:
  *    get:
  *      summary: Get user
  *      tags: [Users]
@@ -75,7 +75,7 @@ router.get('/:id', show)
 /**
  * @swagger
  * path:
- *  api/users/:
+ *  /api/users/:
  *    post:
  *      summary: Create a new user
  *      tags: [Users]
@@ -122,7 +122,7 @@ router.post(
 /**
  * @swagger
  * path:
- *  api/users/{userId}:
+ *  /api/users/{userId}:
  *    put:
  *      summary: Update user
  *      tags: [Users]
@@ -164,7 +164,7 @@ router.put('/:id', body({ name, picture }), update)
 /**
  * @swagger
  * path:
- *  api/users/{userId}/password:
+ *  /api/users/{userId}/password:
  *    put:
  *      summary: Update user password
  *      tags: [Users]
@@ -209,7 +209,7 @@ router.put(
 /**
  * @swagger
  * path:
- *  api/users/{userId}:
+ *  /api/users/{userId}:
  *    delete:
  *      summary: Delete user
  *      tags: [Users]

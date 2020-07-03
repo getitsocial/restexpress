@@ -23,7 +23,7 @@ const { email, password } = userSchema.tree
 /**
  * @swagger
  * path:
- *  api/password-reset/{token}:
+ *  /api/password-reset/{token}:
  *    get:
  *      summary: Get information about password reset
  *      tags: [Password-Reset]
@@ -57,7 +57,7 @@ router.get('/:token', show)
 /**
  * @swagger
  * path:
- *  api/password-reset/:
+ *  /api/password-reset/:
  *    post:
  *      summary: Create a new password-reset thingy
  *      tags: [Password-Reset]
@@ -94,7 +94,7 @@ router.post(
 /**
  * @swagger
  * path:
- *  api/password-reset/{token}:
+ *  /api/password-reset/{token}:
  *    put:
  *      summary: Update user password
  *      tags: [Password-Reset]
