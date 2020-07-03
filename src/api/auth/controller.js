@@ -74,13 +74,13 @@ export const logout = async (req, res, next) => {
     }
 }
 
-export const logoutAll = async ({ user }, res, next) => {
+export const logoutAll = async (req, res, next) => {
     try {
         if (extractToken(req) === null) {
             res.status(BAD_REQUEST).end()
             return
         }
-        const { _id } = user
+        const { user: { _id } } = req
 
         await Session.deleteAllUserSessions(_id)
 

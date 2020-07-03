@@ -40,7 +40,7 @@ beforeEach(async () => {
         role: 'user',
         verified: false
     })
-
+    await sign(defaultUser)
     defaultToken = (await sign(defaultUser)).token
     adminToken = (await sign(adminUser)).token
 
@@ -117,6 +117,25 @@ describe('Auth Test:', () => {
     test('POST /auth/logout BAD_REQUEST', async () => {
         const { statusCode, error } = await request(server)
             .post(`${apiRoot}/auth/logout`)
+
+        expect(statusCode).toBe(BAD_REQUEST)
+        expect(await Session.exists({ user: defaultUser._id})).toBe(true)
+    })
+
+    test('POST /auth/logout/all NO_CONTENT', async () => {
+        const { statusCode, error } = await request(server)
+            .post(`${apiRoot}/auth/logout/all`)
+            .set('Authorization', 'Bearer ' + defaultToken)
+
+        console.log(error)
+        expect(statusCode).toBe(NO_CONTENT)
+
+        expect(await Session.exists({ user: defaultUser._id})).toBe(false)
+    })
+
+    test('POST /auth/logout/all BAD_REQUEST', async () => {
+        const { statusCode, error } = await request(server)
+            .post(`${apiRoot}/auth/logout/all`)
 
         expect(statusCode).toBe(BAD_REQUEST)
         expect(await Session.exists({ user: defaultUser._id})).toBe(true)
