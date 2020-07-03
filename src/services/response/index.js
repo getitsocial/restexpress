@@ -1,12 +1,11 @@
 import { INTERNAL_SERVER_ERROR } from 'http-status-codes'
-const production = process.env.NODE_ENV === 'production'
 
-import { log } from 's/logger'
+const production = process.env.NODE_ENV === 'production'
 
 export const errorHandler = (res, error) => {
 
     if (production) {
-        log(error)
+        // TODO: Implement appropriate logging here
     } else {
         console.error(error)
     }

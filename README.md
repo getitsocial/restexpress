@@ -197,7 +197,6 @@ Tayfun Gülcan - [@Tayfuuu](https://twitter.com/Tayfuuu)
 * [querymen](https://github.com/diegohaz/querymen)
 * [Jest](https://jestjs.io)
 * [Sendgrid](https://sendgrid.com/)
-* [Bugsnag](https://www.bugsnag.com/)
 
 
 [contributors-shield]: https://img.shields.io/github/contributors/tguelcan/restexpress.svg?style=flat-square
