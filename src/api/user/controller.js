@@ -1,16 +1,17 @@
 import { User } from '.'
-import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT } from 'http-status-codes'
+import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT, INTERNAL_SERVER_ERROR } from 'http-status-codes'
 import { sendVerificationMail } from 's/sendgrid'
 const isConflict = error => error.code === 11000
 import Verification from 'a/verification/model'
+import { errorHandler } from 's/response'
 
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
+        throw new Error('yeet')
         const users = await User.paginate(querymen, { method, user, filter: true })
-
         res.status(OK).json(users)
     } catch (error) {
-        return next(error)
+        errorHandler(res, error)
     }
 }
 

@@ -1,4 +1,5 @@
 {
     "email-conflict": "Es existiert bereits ein Nutzer mit dieser E-Mail Adresse",
-    "user-not-found": "Dieser Nutzer wurde nicht gefunden"
+    "user-not-found": "Dieser Nutzer wurde nicht gefunden",
+    "error": "Irgendwas ist bei uns schief gelaufen. Sorry!"
 }

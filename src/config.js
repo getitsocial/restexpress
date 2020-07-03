@@ -67,7 +67,7 @@ const config = {
         },
         i18nConfig: {
             locales: ['en', 'de'],
-            directory: __dirname + '/locales'
+            directory: __dirname + '/../locales'
         }
     },
     test: {
