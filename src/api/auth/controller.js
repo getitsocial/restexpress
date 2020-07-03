@@ -3,6 +3,7 @@ import Session from '~/api/session/model'
 import { sign, decodeJWT, destroy, comparePassword, providerAuth } from 's/auth'
 import { OK, NOT_FOUND, UNAUTHORIZED, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
 import { extractToken } from 's/auth/utils'
+import { errorHandler } from 's/response'
 
 const signHandler = async (user, res) => {
     // Sign Token
@@ -40,7 +41,7 @@ export const authenticate = async ({ body: { email, password }, device }, res, n
         // Sign in user
         await signHandler(user, res)
     } catch (error) {
-        next(error)
+        errorHandler(res, error)
     }
 }
 
@@ -57,7 +58,7 @@ export const providerAuthenticate = async ({ body, params }, res, next) => {
         // Sign in user
         await signHandler(user, res)
     } catch (error) {
-        next(error)
+        errorHandler(res, error)
     }
 }
 
@@ -70,7 +71,7 @@ export const logout = async (req, res, next) => {
         await destroy(req)
         res.status(NO_CONTENT).end()
     } catch (error) {
-        next(error)
+        errorHandler(res, error)
     }
 }
 
@@ -86,6 +87,6 @@ export const logoutAll = async (req, res, next) => {
 
         res.status(NO_CONTENT).end()
     } catch (error) {
-        next(error)
+        errorHandler(res, error)
     }
 }

@@ -25,7 +25,7 @@ export const show = async ({ user: { _id, role }, method, params: { id } }, res)
 
         res.status(OK).json(user.filter({ role, method }))
     } catch (error) {
-        return next(error)
+        errorHandler(res, error)
     }
 }
 
@@ -45,7 +45,7 @@ export const create = async ({ bodymen: { body }, method, user }, res, next) => 
 
         res.status(CREATED).json(doc.filter({ role: user?.role, method }))
     } catch (error) {
-        return next(error)
+        errorHandler(res, error)
     }
 }
 
@@ -67,7 +67,7 @@ export const update = async ({ bodymen: { body }, params, user, method }, res, n
 
         res.status(OK).json(doc.filter({ role: user.role, method }))
     } catch (error) {
-        return next(error)
+        errorHandler(res, error)
     }
 }
 
@@ -89,7 +89,7 @@ export const updatePassword = async ({ bodymen: { body }, params, user }, res, n
 
         res.status(NO_CONTENT).end()
     } catch (error) {
-        return next(error)
+        errorHandler(res, error)
     }
 }
 
@@ -111,6 +111,6 @@ export const destroy = async ({ user, params: { id } }, res, next) => {
 
         res.status(NO_CONTENT).end()
     } catch (error) {
-        return next(error)
+        errorHandler(res, error)
     }
 }

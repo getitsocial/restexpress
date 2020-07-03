@@ -2,7 +2,7 @@ import { PasswordReset } from '.'
 import { OK, NO_CONTENT, NOT_FOUND, FORBIDDEN, BAD_REQUEST } from 'http-status-codes'
 import User from 'a/user/model'
 import Session from 'a/session/model'
-
+import { errorHandler } from 's/response'
 import { sendPasswordResetMail } from 's/sendgrid'
 
 export const show = async ({ params: { token } }, res, next) => {
@@ -18,7 +18,7 @@ export const show = async ({ params: { token } }, res, next) => {
         res.status(OK).json({ picture, name })
 
     } catch (error) {
-        return next(error)
+        errorHandler(res, error)
     }
 }
 
@@ -40,7 +40,7 @@ export const create = async ({ bodymen: { body: { email } } }, res, next) => {
         res.status(NO_CONTENT).end()
 
     } catch (error) {
-        return next(error)
+        errorHandler(res, error)
     }
 
 }
@@ -75,7 +75,7 @@ export const update = async ({ bodymen: { body: { password }}, params: { token }
         res.status(NO_CONTENT).end()
 
     } catch (error) {
-        return next(error)
+        errorHandler(res, error)
     }
 
 }
