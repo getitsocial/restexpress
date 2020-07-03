@@ -65,7 +65,6 @@ Of course, no template will serve all projects since your needs may be different
 * [Babel](https://babeljs.io)
 * [ExpressJS](https://expressjs.com)
 * [MongoDB](https://mongodb.com)
-* [Redis](https://redis.io)
 
 
 <!-- GETTING STARTED -->
@@ -79,9 +78,8 @@ To get a local copy up and running follow these simple example steps.
 This is an example of how to list things you need to use the software and how to install them.
 * [yarn](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
 * [mongoDB](https://docs.mongodb.com/manual/installation/)
-* [redis](https://redis.io/download)
 
-The easiest way to install mongoDB and redis is with docker. A simple docker-compose file would look like this:
+The easiest way to install mongoDB is with docker. A simple docker-compose file would look like this:
 ```yml
 version: "3.8"
 services:
@@ -89,10 +87,6 @@ services:
         image: mongo:4.2.5
         ports:
             - "27017:27017"
-    redis:
-        image: redis:5.0.8
-        ports:
-            - "6379:6379"
 ```
 ### Installation
 
