@@ -123,13 +123,11 @@ describe('Auth Test:', () => {
     })
 
     test('POST /auth/logout/all NO_CONTENT', async () => {
-        const { statusCode, error } = await request(server)
+        const { statusCode } = await request(server)
             .post(`${apiRoot}/auth/logout/all`)
             .set('Authorization', 'Bearer ' + defaultToken)
 
-        console.log(error)
         expect(statusCode).toBe(NO_CONTENT)
-
         expect(await Session.exists({ user: defaultUser._id})).toBe(false)
     })
 
