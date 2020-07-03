@@ -5,7 +5,7 @@ import { Router } from 'express'
 import { sign, doorman } from 's/auth'
 import { addAuthor } from 's/request'
 import User from 'a/user/model'
-import { Message as Data } from 'a/message'
+import { {{pascalCase endpointName}} as Data } from 'a/{{lowerCase endpointName}}'
 import { apiRoot, masterKey } from '~/config'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'
 
@@ -16,7 +16,7 @@ let adminUser,
     guestData,
     userData,
     adminData,
-    apiEndpoint = 'messages'
+    apiEndpoint = '{{lowerCase endpointName}}s'
 
 beforeEach(async () => {
 

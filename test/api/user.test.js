@@ -39,11 +39,10 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
     // INDEX
     test(`GET ${apiRoot}/${apiEndpoint} USER FORBIDDEN`, async () => {
-        const { status, error } = await request(server)
+        const { status } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
 
-        console.log(error)
         expect(status).toBe(FORBIDDEN)
     })
 
@@ -140,11 +139,10 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
     // CREATE
     test(`POST ${apiRoot}/${apiEndpoint}/ GUEST CREATED`, async () => {
-        const { status, body, error } = await request(server)
+        const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
             .send({ email: 'marty2@getit.social', password: 'SoEinGutesPasswortOmg123?!', name: 'Marty' })
 
-        console.log(error)
         const { verified } = await User.findOne({ email: 'marty2@getit.social' })
         expect(verified).toBe(false)
 
