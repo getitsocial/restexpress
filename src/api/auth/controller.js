@@ -1,4 +1,5 @@
 import User from '~/api/user/model'
+import Session from '~/api/session/model'
 import { sign, decodeJWT, destroy, comparePassword, providerAuth } from 's/auth'
 import { OK, NOT_FOUND, UNAUTHORIZED, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
 import { extractToken } from 's/auth/utils'
@@ -62,11 +63,27 @@ export const providerAuthenticate = async ({ body, params }, res, next) => {
 
 export const logout = async (req, res, next) => {
     try {
-        if (extractToken(req) == null) {
+        if (extractToken(req) === null) {
             res.status(BAD_REQUEST).end()
             return
         }
         await destroy(req)
+        res.status(NO_CONTENT).end()
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const logoutAll = async ({ user }, res, next) => {
+    try {
+        if (extractToken(req) === null) {
+            res.status(BAD_REQUEST).end()
+            return
+        }
+        const { _id } = user
+
+        await Session.deleteAllUserSessions(_id)
+
         res.status(NO_CONTENT).end()
     } catch (error) {
         next(error)

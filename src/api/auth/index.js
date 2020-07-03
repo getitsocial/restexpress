@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
-import { authenticate, providerAuthenticate, logout } from './controller'
+import { authenticate, providerAuthenticate, logout, logoutAll } from './controller'
 import { masterman, doorman } from '~/services/auth'
 
 const router = new Router()
@@ -39,6 +39,8 @@ router.post(
  * @apiError 401 Invalid credentials.
  */
 router.post('/logout', logout)
+
+router.post('/logout/all', logoutAll)
 
 /**
  * @api {post} /auth/:provider Authenticate with Facebook or Google
