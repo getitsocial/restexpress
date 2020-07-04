@@ -1,4 +1,4 @@
-##ExpressJS Service
+## ExpressJS Service
 
 As basis we use Express ACL. We have extended the spelling in the configuration. This enables us to configure the projection of the response (view key).
 
