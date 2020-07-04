@@ -6,7 +6,7 @@ Express Access Control Lists [express-acl](https://github.com/nyambati/express-a
 
 In the example we see an acl configuration for the endpoint "messages"
 
-```javascript
+```js
 const permissions = [
     {
         group: 'guest',
@@ -44,5 +44,4 @@ const permissions = [
 ]
 
 export default permissions
-
-``
+```
