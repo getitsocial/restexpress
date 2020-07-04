@@ -119,7 +119,7 @@ You can run tests with:
 ```sh
 yarn run test
 ```
-or 
+or
 ```sh
 yarn run test:coverage
 ```
@@ -132,7 +132,7 @@ to check the code coverage
 0. Read about [Mongoose Plugins](https://mongoosejs.com/docs/plugins.html)
 1. Create your new plugin in `src/services/mongoose/plugins`
 2. Make sure to export it in `src/services/mongoose/index.js`
-3. Access the plugin in your model like this: 
+3. Access the plugin in your model like this:
 ```js
 import { yourPlugin } from 's/mongoose'
 ```
@@ -170,7 +170,7 @@ JWT_SECRET=
 MONGODB_URI=
 SENDGRID_KEY=
 ```
-You can get a free mongoDB database from [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and a free [SendGrid](https://sendgrid.com/) account for testing 
+You can get a free mongoDB database from [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and a free [SendGrid](https://sendgrid.com/) account for testing
 
 3. `heroku git:remote -a <your-app-name>`
 4. `git push heroku master`
@@ -237,5 +237,5 @@ Tayfun Gülcan - [@Tayfuuu](https://twitter.com/Tayfuuu)
 [issues-shield]: https://img.shields.io/github/issues/tguelcan/restexpress.svg?style=flat-square
 [issues-url]: https://github.com/tguelcan/restexpress/issues
 [license-shield]: https://img.shields.io/github/license/tguelcan/restexpress.svg?style=flat-square
-[license-url]: https://github.com/tguelcan/restexpress/blob/master/LICENSE.txt
+[license-url]: https://github.com/tguelcan/restexpress/blob/master/LICENSE.md
 [yarn-run-dev-screenshot]: images/yarn-run-dev-screenshot.png
