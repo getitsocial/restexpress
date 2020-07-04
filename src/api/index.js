@@ -20,7 +20,6 @@ router.use('/password-reset', passwordReset)
 // Export the relevant models for swagger documentation
 export const Models = [
     /* ENDPOINT_DOCS_EXPORT */
-    Article,
     User,
     Message
 ]
