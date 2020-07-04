@@ -95,7 +95,14 @@ const config = {
         ip: process.env.IP || undefined,
         port: process.env.PORT || 8080,
         mongo: {
-            uri: process.env.MONGODB_URI || 'mongodb://localhost/testgenerator'
+            uri: process.env.MONGODB_URI || 'mongodb://localhost/testgenerator',
+            options: {
+                debug: true,
+                useCreateIndex: true,
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useFindAndModify: false
+            }
         }
     }
 }
