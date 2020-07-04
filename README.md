@@ -160,8 +160,25 @@ Enter your resource name
 <!-- Deployment -->
 ## Deployment
 
+### Heroku + MongoDB Atlas = 👁👄👁
+
+1. Create a new heroku app
+2. Enter the needed environment variables:
+```
+MASTER_KEY=
+JWT_SECRET=
+MONGODB_URI=
+SENDGRID_KEY=
+```
+You can get a free mongoDB database from [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and a free [SendGrid](https://sendgrid.com/) account for testing 
+
+3. `heroku git:remote -a <your-app-name>`
+4. `git push heroku master`
+5. Your API should now be online and accessible under: https://\<your-app-name>.herokuapp.com/ 🥳
+
+### Docker
+
 // TODO:
-// Add steps or link to tutorial for Heroku and docker based deployment
 
 <!-- ROADMAP -->
 ## Roadmap
