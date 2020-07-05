@@ -81,7 +81,7 @@ This is an example of how to list things you need to use the software and how to
 
 The easiest way to install mongoDB is with docker. A simple docker-compose file would look like this:
 ```yml
-version: "3.8"
+version: "3.3"
 services:
     mongo:
         image: mongo:4.2.5
@@ -178,7 +178,15 @@ You can get a free mongoDB database from [MongoDB Atlas](https://www.mongodb.com
 
 ### Docker
 
-// TODO:
+If you are using Atlas MongoDB:
+
+`docker build -t restexpress .`
+
+`docker run -p 8080:8080 --env-file .env restexpress:latest`
+
+If you want to use docker-compose for your mongoDB Instance:
+
+`docker-compose up`
 
 <!-- ROADMAP -->
 ## Roadmap
