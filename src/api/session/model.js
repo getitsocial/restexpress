@@ -39,9 +39,9 @@ sessionSchema.statics = {
     deleteAllUserSessions: async function(user) {
         await model.deleteMany({ user })
     },
-    // TODO: Tests
+
     truncateSessions: async function ({ user, maxSessionCount }) {
-        const count = await model.count({ user })
+        const count = await model.countDocuments({ user })
         if (count > maxSessionCount) {
             const sessions = await model.find({ user }).sort({ lastActivity: 1 })
             await sessions[0].remove()
