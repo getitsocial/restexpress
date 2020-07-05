@@ -25,6 +25,10 @@ const sessionSchema = new Schema(
             type: Date,
             default: Date.now,
             expires: jwtConfig.expiresIn
+        },
+        lastActivity: {
+            type: Date,
+            default: Date.now
         }
     },
 )
@@ -34,6 +38,14 @@ const sessionSchema = new Schema(
 sessionSchema.statics = {
     deleteAllUserSessions: async function(user) {
         await model.deleteMany({ user })
+    },
+
+    truncateSessions: async function ({ user, maxSessionCount }) {
+        const count = await model.countDocuments({ user })
+        if (count > maxSessionCount) {
+            const sessions = await model.find({ user }).sort({ lastActivity: 1 })
+            await sessions[0].remove()
+        }
     }
 }
 
