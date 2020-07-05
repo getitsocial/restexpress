@@ -3,7 +3,7 @@ import eJWT from 'express-jwt'
 import Session from '~/api/session'
 import { uid } from 'rand-token'
 import { extractToken, extractMaster } from 's/auth/utils'
-import { jwtConfig, masterKey } from '~/config'
+import { jwtConfig, masterKey, maxSessionCount } from '~/config'
 
 // Get JWT Secret
 const { secret } = jwtConfig
@@ -34,6 +34,7 @@ export const sign = async ({ _id, role, device = {} }) => {
         const token = await jwt.sign({ _id, role }, secret, { expiresIn: jwtConfig.expiresIn, jwtid: uid(12) })
         const tokenInformation = await jwt.decode(token)
         await Session.create({ jti: tokenInformation.jti, user: _id, device })
+        await Session.truncateSessions({ user: _id, maxSessionCount })
         return Object.assign(tokenInformation, { token })
     } catch (error) {
     // TODO: error handling (catch and response)

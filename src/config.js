@@ -16,6 +16,7 @@ const config = {
         ip: process.env.IP || '0.0.0.0',
         apiRoot: process.env.API_ROOT || '/api',
         masterKey: requireProcessEnv('MASTER_KEY'),
+        maxSessionCount: 10,
         jwtConfig: {
             secret: requireProcessEnv('JWT_SECRET'),
             credentialsRequired: false,
