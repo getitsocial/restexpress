@@ -25,6 +25,10 @@ const sessionSchema = new Schema(
             type: Date,
             default: Date.now,
             expires: jwtConfig.expiresIn
+        },
+        lastActivity: {
+            type: Date,
+            default: Date.now
         }
     },
 )
