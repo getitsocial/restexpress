@@ -11,7 +11,7 @@ const signHandler = async (user, res) => {
     res.status(OK).json({ _id, role, token})
 }
 
-export const authenticate = async ({ body: { email, password }, device }, res, next) => {
+export const authenticate = async ({ body: { email, password }, fingerprint: { hash } }, res, next) => {
     // Pass value
     try {
         // Find user
@@ -35,8 +35,14 @@ export const authenticate = async ({ body: { email, password }, device }, res, n
             return
         }
 
+        if (!user.knownDevices.includes(hash)) {
+            console.log(`skurrrr new device! ${hash}`)
+            user.knownDevices.push(hash)
+            await user.save()
+        }
+
         // Assign device to user
-        user.device = device
+        user.device = hash
 
         // Sign in user
         await signHandler(user, res)
