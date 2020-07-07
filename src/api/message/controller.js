@@ -3,7 +3,7 @@ import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes
 import { errorHandler } from 's/response'
 
 // Get all
-export const index = async ({ querymen, user, method }, res, next) => {
+export const index = async ({ querymen, user, method, fingerprint }, res, next) => {
     try {
         const messages = await Message.paginate(querymen, {
             populate: [{ path: 'author' }],
@@ -11,7 +11,7 @@ export const index = async ({ querymen, user, method }, res, next) => {
             user
         })
 
-        res.status(OK).json(messages)
+        res.status(OK).json({ fingerprint })
     } catch (error) {
         errorHandler(res, error)
     }
