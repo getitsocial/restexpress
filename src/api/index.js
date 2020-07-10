@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { env, mongo, port, ip, apiRoot } from '~/config'
 import { doorman } from '~/services/auth/guard'
 /* ENDPOINT_ROUTER_IMPORT */
+import media from './media'
 import auth from './auth'
 import verification from './verification'
 import passwordReset from './password-reset'
@@ -11,6 +12,7 @@ import message, { Message } from './message'
 const router = new Router()
 
 /* ENDPOINT_ROUTER_EXPORT */
+router.use('/media', media)
 router.use('/auth', auth)
 router.use('/verification', verification)
 router.use('/users', user)

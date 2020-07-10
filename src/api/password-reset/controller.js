@@ -10,7 +10,7 @@ export const show = async ({ params: { token } }, res, next) => {
         const reset = await PasswordReset.findOne({ token }).populate('user')
 
         if (!reset || !reset.user) {
-            res.status(BAD_REQUEST).json({ valid: false, message: res.__('invalid-parameters') }).end()
+            res.status(BAD_REQUEST).json({ valid: false, message: res.__('missing-or-wrong-parameters') }).end()
             return
         }
         const { picture, name } = reset.user

@@ -23,6 +23,16 @@ const config = {
             getToken: req => extractToken(req),
             expiresIn: '8d'
         },
+        fileUploadConfig: {
+            limits: {
+                fileSize: 10 * 1024 * 1024,
+                files: 1 // This apparently does not abort the process, it just cuts off files over the limit?
+            },
+            safeFileNames: true,
+            useTempFiles : true,
+            abortOnLimit: true,
+            tempFileDir : '/tmp/'
+        },
         rateLimiter: {
             windowMs: 15 * 60 * 1000, // 15 minutes
             max: 100 // limit each IP to 100 requests per windowMs
@@ -34,6 +44,11 @@ const config = {
                 forgot: 'd-ac2e091839ab4112b1be2ff7d9d2d6d3'
             },
             defaultEmail: 'no-reply@your-website.com'
+        },
+        cloudinaryConfig: {
+            cloud_name: requireProcessEnv('CLOUDINARY_CLOUD_NAME'),
+            api_key: requireProcessEnv('CLOUDINARY_API_KEY'),
+            api_secret: requireProcessEnv('CLOUDINARY_API_SECRET')
         },
         swagger: {
             url: '/docs',
