@@ -1,5 +1,6 @@
 import { Router } from 'express'
 /* ENDPOINT_ROUTER_IMPORT */
+import media from './media'
 import auth from './auth'
 import verification from './verification'
 import passwordReset from './password-reset'
@@ -8,6 +9,7 @@ import user, { User } from './user'
 const router = new Router()
 
 /* ENDPOINT_ROUTER_EXPORT */
+router.use('/media', media)
 router.use('/auth', auth)
 router.use('/verification', verification)
 router.use('/users', user)
