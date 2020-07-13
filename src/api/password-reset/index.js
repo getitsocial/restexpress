@@ -3,6 +3,7 @@ export PasswordReset, { schema } from './model'
 import { masterman } from '~/services/auth'
 import { middleware as body } from 'bodymen'
 import { schema as userSchema } from 'a/user/model'
+import { passwordValidator, emailValidator } from '~/utils/validator'
 import {
     create,
     show,
@@ -86,7 +87,15 @@ router.post(
     '',
     masterman(),
     body({
-        email,
+        email: {
+            ...email,
+            validate: (value) => (
+                {
+                    valid: emailValidator.test(value),
+                    message: 'Email is invalid'
+                }
+            )
+        },
     }),
     create
 )
@@ -127,7 +136,15 @@ router.post(
 router.patch(
     '/:token',
     body({
-        password
+        password: {
+            ...password,
+            validate: (value) => (
+                {
+                    valid: passwordValidator.test(value),
+                    message: 'Password is invalid'
+                }
+            )
+        },
     }),
     update
 )
