@@ -4,10 +4,10 @@ import { middleware as body } from 'bodymen'
 import { masterman, validateUserBeforeCreate } from 's/auth'
 import { schema } from './model'
 export User, { schema } from './model'
+import { passwordValidator, emailValidator } from '~/utils/validator'
 
 import {
     index,
-    showMe,
     show,
     create,
     update,
@@ -110,8 +110,24 @@ router.post(
     masterman(),
     validateUserBeforeCreate(),
     body({
-        email,
-        password,
+        email: {
+            ...email,
+            validate: (value) => (
+                {
+                    valid: emailValidator.test(value),
+                    message: 'Email is invalid'
+                }
+            )
+        },
+        password: {
+            ...password,
+            validate: (value) => (
+                {
+                    valid: passwordValidator.test(value),
+                    message: 'Password is invalid'
+                }
+            )
+        },
         name,
         picture,
         role
@@ -201,7 +217,15 @@ router.put('/:id', body({ name, picture }), update)
 router.put(
     '/:id/password',
     body({
-        password
+        password: {
+            ...password,
+            validate: (value) => (
+                {
+                    valid: passwordValidator.test(value),
+                    message: 'Password is invalid'
+                }
+            )
+        },
     }),
     updatePassword
 )

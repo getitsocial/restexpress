@@ -19,12 +19,18 @@ const userSchema = new Schema(
             unique: true,
             trim: true,
             lowercase: true,
-            match: emailValidator
+            validate: {
+                validator: (value) => emailValidator.test(value),
+                message: props => 'Email is invalid'
+            }
         },
         password: {
             type: String,
-            match: passwordValidator,
             required: true,
+            validate: {
+                validator: (value) => passwordValidator.test(value),
+                message: props => 'Password is invalid'
+            }
         },
         name: {
             type: String,
